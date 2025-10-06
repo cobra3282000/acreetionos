@@ -78,3 +78,16 @@ sleep-display-ac=0
 
 [theme]
 name='CBlack'
+
+[org/nemo/desktop]
+show-desktop-icons=true
+desktop-layout='true::false'
+home-icon-visible=true
+computer-icon-visible=true
+trash-icon-visible=true
+volumes-visible=true
+
+[org/nemo/preferences]
+show-hidden-files=false
+show-image-thumbnails='always'
+thumbnail-limit=uint64 10485760
