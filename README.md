@@ -2,7 +2,7 @@
 # copyright 2025
 Welcome to AcreetionOS Linux, an open-source project aimed at providing the user a stable and up-to-date experience.
 
-Download ISO here: www.acreetionos.org
+Download ISO here: https://acreetionos.org
 
 ## Project Overview
 
@@ -19,7 +19,7 @@ AcreetionOS Linux is a community-driven effort to build a lightweight, versatile
 
 To get started with AcreetionOS Linux, you can:
 
-1. Download the latest ISO from our [Website]("AcreetionOSWebsite link")!
+1. Download the latest ISO from our [Website](https://acreetionos.org)!
 2. Create a bootable USB drive using tools like [Etcher]("https://etcher.balena.io/#download-etcher"), [Rufus]("https://rufus.ie/en/"), or [Ventoy]("https://ventoy.net/en/index.html").
 3. Boot from the USB drive and follow the installation instructions
 
@@ -30,7 +30,7 @@ We welcome contributions from the community! Please see our [Contributing Guide]
 
 ## Roadmap
 
-Our current goal is to release a stable distribution by the end of 2026. Check out our [project road map]("https://darrengames.ddns.net:30008/cobra3282000/AcreetionOS/projects/2") for more details on upcoming features and milestones.
+Our current goal is to release a stable distribution by the end of 2026. Check out our [project road map](https://github.com/cobra3282000/acreetionos/projects) for more details on upcoming features and milestones.
 
 ## Project Information
 
@@ -41,7 +41,7 @@ Our current goal is to release a stable distribution by the end of 2026. Check o
 
 ## Contact
 
-For questions, suggestions, or support, please [open an issue](https://gitea.example.com/accretion-linux/issues) on our Gitea repository.
+For questions, suggestions, or support, please [open an issue](https://github.com/cobra3282000/acreetionos/issues) on our GitHub repository.
 
 Thank you for your interest in AcreetionOS Linux!
 
