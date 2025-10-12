@@ -214,7 +214,7 @@ nodejs
 #pamac-aur-git
 #pamac-all
 gnome-themes-extra
-# gtk-engine-murrine
+# gtk-engine
 cinnamon-translations
 adwaita-icon-theme
 xxkpmcore
@@ -247,3 +247,11 @@ linux-firmware-mellanox
 #firefox
 gnu-free-fonts
 mailcap
+gstreamer
+gst-plugins-base-libs
+gst-plugins-bad-libs
+gst-plugins-base
+gst-plugins-good
+gst-plugins-bad
+gst-plugins-ugly
+gst-libav
