@@ -247,11 +247,7 @@ linux-firmware-mellanox
 #firefox
 gnu-free-fonts
 mailcap
-gstreamer
-gst-plugins-base-libs
-gst-plugins-bad-libs
-gst-plugins-base
-gst-plugins-good
-gst-plugins-bad
-gst-plugins-ugly
-gst-libav
+libvpx
+libx264
+ffmpeg
+firefox
