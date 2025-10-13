@@ -134,6 +134,15 @@ lightdm-gtk-greeter
 pipewire-pulse
 wireplumber
 pavucontrol
+# Multimedia codecs and frameworks
+libvpx
+libx264
+ffmpeg
+gstreamer
+gst-plugins-base
+gst-plugins-base-libs
+gst-plugins-good
+gst-libav
 firefox
 qt6-multimedia-ffmpeg
 qt6-multimedia-gstreamer
