@@ -354,4 +354,4 @@ pv
 #udftools
 nbd
 #nfs-utils
-#open-iscsi
+open-iscsi
