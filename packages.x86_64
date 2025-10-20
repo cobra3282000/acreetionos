@@ -256,3 +256,7 @@ linux-firmware-mellanox
 #firefox
 gnu-free-fonts
 mailcap
+
+
+# QEMU Scaling
+spice-vdagent
