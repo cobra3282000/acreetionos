@@ -8,7 +8,7 @@ iso_application="Acreetion OS Install Media"
 iso_version="1.0"
 install_dir="arch"
 buildmodes=('iso')
-bootmodes=('bios.syslinux.mbr' 'bios.syslinux.eltorito' 'uefi-x64.systemd-boot.esp')
+bootmodes=('bios.syslinux.mbr' 'bios.syslinux.eltorito' 'uefi-ia32.grub.esp' 'uefi-x64.grub.esp' 'uefi-ia32.grub.eltorito' 'uefi-x64.grub.eltorito')
 arch="x86_64"
 pacman_conf="pacman.conf"
 airootfs_image_type="squashfs"
@@ -35,4 +35,5 @@ file_permissions=(
   ["/usr/local/bin/preinstall"]="0:0:755"
   ["/usr/local/bin/stormos-final"]="0:0:755"
   ["/usr/bin/wifi-connection.sh"]="0:0:755"
+  ["/usr/local/bin/setup-displays.sh"]="0:0:755"
 )

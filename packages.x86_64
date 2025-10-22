@@ -1,119 +1,109 @@
-alsa-utils
-#amd-ucode
-#intel-compute-runtime
-arch-install-scripts
-#dracut
-#archiso
-b43-fwcutter
+################################################################################
+# AcreetionOS Package List
+# Optimized for minimal ISO size while maintaining full functionality
+################################################################################
+
+################################################################################
+# CORE SYSTEM - Essential base system packages
+################################################################################
 base
-bind
-bolt
-#brltty
-broadcom-wl-dkms
-#btrfs-progs
-#xfsprogs
-cloud-init
-cryptsetup
-ddrescue
-dhclient
-dhcpcd
-diffutils
-dmidecode
-#dmraid
-dnsmasq
-dosfstools
-e2fsprogs
-efibootmgr
-espeakup
-ethtool
-exfatprogs
-fatresize
-fsarchiver
-# gnu-netcat
-gpart
-gpm
-gptfdisk
-grub
-hdparm
-#intel-ucode
-#irssi
-iw
-iwd
-ldns
-less
-#lftp
-#libfido2
-libusb-compat
 linux
 linux-headers
 linux-atm
 linux-firmware
 linux-firmware-marvell
-livecd-sounds
-lsscsi
-lvm2
-#man-db
-#man-pages
-mc
-mdadm
+linux-firmware-whence
 mkinitcpio
 mkinitcpio-archiso
 mkinitcpio-nfs-utils
 mkinitcpio-busybox
 mkinitcpio-systemd-tool
 mkinitcpio-openswap
-modemmanager
-mtools
-nano
-nbd
-ndisc6
-nfs-utils
-nilfs-utils
-nmap
-ntfs-3g
-nvme-cli
-os-prober
-open-iscsi
-open-vm-tools
-openconnect
-# openpgp-card-tools
-openssh
-openvpn
-partclone
-parted
-partimage
-pcsclite
-ppp
-pptpclient
-pv
-qemu-guest-agent
-#reflector
-rp-pppoe
-rsync
-sdparm
-sequoia-sq
-sg3_utils
-smartmontools
-sof-firmware
-squashfs-tools
 sudo
+dbus
+polkit
+polkit-gnome
+arch-install-scripts
+
+################################################################################
+# BOOT & BOOTLOADER - Required for booting the ISO and installing bootloader
+################################################################################
+grub
 syslinux
-#systemd-resolvconf
-tcpdump
-testdisk
-tpm2-tools
-tpm2-tss
-udftools
-usb_modeswitch
-usbmuxd
-usbutils
-virtualbox-guest-utils-nox
-vpnc
+efibootmgr
+os-prober
+
+################################################################################
+# FILESYSTEM SUPPORT - Essential filesystem tools for installation
+################################################################################
+dosfstools
+e2fsprogs
+exfatprogs
+fatresize
+ntfs-3g
+squashfs-tools
+gptfdisk
+parted
+gpart
+device-mapper
+
+################################################################################
+# ENCRYPTION & SECURITY
+################################################################################
+cryptsetup
+
+################################################################################
+# NETWORKING - Core networking components
+################################################################################
+networkmanager
+network-manager-applet
+dhcpcd
+dhclient
+iw
+iwd
 wireless-regdb
 wireless_tools
-wvdial
-xl2tpd
-zsh
+openssh
+rsync
+
+################################################################################
+# AUDIO SYSTEM
+################################################################################
+alsa-utils
+pipewire-pulse
+wireplumber
+pavucontrol
+sof-firmware
+
+################################################################################
+# DISPLAY SERVER & GRAPHICS
+################################################################################
+xorg
+mesa
+mesa-utils
+glu
+vulkan-headers
+ocl-icd
+opencl-headers
+directx-headers
+
+################################################################################
+# GRAPHICS DRIVERS
+################################################################################
+xf86-video-amdgpu
+xf86-video-intel
+xf86-video-nouveau
+xf86-input-libinput
+
+################################################################################
+# DISPLAY MANAGER
+################################################################################
+lightdm
+lightdm-gtk-greeter
+
+################################################################################
+# CINNAMON DESKTOP ENVIRONMENT
+################################################################################
 cinnamon
 cinnamon-control-center
 cinnamon-desktop
@@ -121,142 +111,247 @@ cinnamon-menus
 cinnamon-session
 cinnamon-settings-daemon
 cinnamon-screensaver
+cinnamon-translations
 cjs
 muffin
-#nemo
+nemo
+gnome-terminal
+gnome-keyring
+gnome-themes-extra
+
+################################################################################
+# DESKTOP INTEGRATION & PORTALS
+################################################################################
 xdg-desktop-portal-xapp
+xdg-user-dirs
 xdg-user-dirs-gtk
-#gnome-terminal
-xorg
-lightdm
-lightdm-gtk-greeter
-#pipewire
-pipewire-pulse
-wireplumber
-pavucontrol
-# Multimedia codecs and frameworks
-libvpx
-libx264
-ffmpeg
-gstreamer
-gst-plugins-base
-gst-plugins-base-libs
-gst-plugins-good
-gst-libav
-firefox
-qt6-multimedia-ffmpeg
-qt6-multimedia-gstreamer
-qca-qt6
+xdg-utils
+accountsservice
+
+################################################################################
+# QT6 LIBRARIES - Required for Calamares installer
+################################################################################
 qt6-5compat
 qt6-base
 qt6-declarative
-qt6-doc
 qt6-shadertools
 qt6-svg
 qt6-tools
 qt6-translations
 qt6-wayland
-#gedit
-# gnome-system-monitor
-# mate-icon-theme-faenza
-#numix-themes
-#libkf6crash-devel
-glu
+qt6-multimedia-ffmpeg
+qt6-multimedia-gstreamer
+qca-qt6
+
+################################################################################
+# CALAMARES INSTALLER - System installer and dependencies
+################################################################################
 calamares-git
-#calamares-app
-#xxcalamares
-#calamares-git
-#calamares-git
 calamares-config
-#gnome-disk-utility
-# fastfetch
-# cinnamon-configs
-# webapp-manager
-cups
 kpmcore
-electron31
-networkmanager
-# samba
-#vlc
-#yay-bin
-#libpamac-aur
-#pamac-aur-git
-#xarchiver
-#debugedit
+xxkpmcore
+yaml-cpp
+libpwquality
+
+################################################################################
+# SYSTEM UTILITIES
+################################################################################
+diffutils
 fakeroot
-#timeshift
-#cosmic-terminal
-#gnome-terminal
+nano
+zsh
+cups
+
+################################################################################
+# HARDWARE SUPPORT & UTILITIES
+################################################################################
+usbutils
+libusb-compat
+ddcutil
+broadcom-wl-dkms
+ppp
+
+################################################################################
+# ACCESSIBILITY
+################################################################################
+espeakup
+
+################################################################################
+# LIBRARIES & DEPENDENCIES
+################################################################################
 gnutls
 glib-networking
-ddcutil
-directx-headers
-#imagemagick
 libnm
 libpulse
 libxcb
 libxrandr
-mesa
-ocl-icd
-opencl-headers
-vulkan-headers
-#wayland
 xfconf
 zlib
-lib32-nettle
 nettle
-# systemd-resolvconf
-yaml-cpp
-libpwquality
-gnome-terminal
+lib32-nettle
+libnsl
+
+################################################################################
+# PYTHON - Required for various system tools
+################################################################################
 python
 python-six
 python-pam
 python312-main
+
+################################################################################
+# APPLICATIONS
+################################################################################
+firefox
+electron31
+
+################################################################################
+# THEMES & ICONS
+################################################################################
+adwaita-icon-theme
+gnu-free-fonts
+
+################################################################################
+# MISCELLANEOUS
+################################################################################
+livecd-sounds
+mailcap
+mtools
+
+################################################################################
+# COMMENTED OUT - Previously included, kept for reference
+################################################################################
+# Hardware microcode (uncomment if needed for specific hardware)
+#amd-ucode
+#intel-ucode
+
+# Additional filesystems (uncomment if needed)
+#btrfs-progs
+#xfsprogs
+
+# Advanced features (uncomment if needed)
+#reflector
+#systemd-resolvconf
+
+# Alternative terminals
+#cosmic-terminal
+
+# File compression/archive tools
+#xarchiver
+
+# Backup tools
+#timeshift
+
+# Package managers
+#yay-bin
+#libpamac-aur
+#pamac-aur-git
+
+# Media players
+#vlc
+
+# System monitoring
+#gnome-system-monitor
+
+# Themes
+#numix-themes
+#mate-icon-theme-faenza
+
+# Text editors
+#gedit
+
+# File managers
+#webapp-manager
+
+# Network sharing
+#samba
+
+# System info
+#fastfetch
+
+# Development tools (uncomment if needed for building packages)
 base-devel
 git
 python-pip
-#rust
 rust
 nodejs
-#firefox
-#pamac-aur-git
-#pamac-all
-gnome-themes-extra
-# gtk-engine
-cinnamon-translations
-adwaita-icon-theme
-xxkpmcore
-nemo
-#archiso
-libnsl
-polkit
-polkit-gnome
-accountsservice
-gnome-keyring
-xdg-user-dirs
-xdg-utils
-dbus
-mesa-utils
-network-manager-applet
-xf86-video-amdgpu
-xf86-video-intel
-xf86-video-nouveau
-xf86-input-libinput
-xxlibxml2-so.2
-device-mapper
-linux-firmware-bnx2x
-linux-firmware-liquidio
-linux-firmware-nfp
-linux-firmware-qcom
-linux-firmware-qlogic
-linux-firmware-whence
-linux-firmware-mellanox
-#nano-syntax-highlighting
-#firefox
-gnu-free-fonts
-mailcap
 
+# Advanced networking (uncomment if needed)
+#bind
+#dnsmasq
+#openconnect
+#openvpn
+#pptpclient
+#rp-pppoe
+#vpnc
+#xl2tpd
+#wvdial
 
-# QEMU Scaling
-resolutionscaler-git
+# Virtualization guest tools (uncomment if needed)
+open-vm-tools
+qemu-guest-agent
+virtualbox-guest-utils-nox
+
+# Advanced storage (uncomment if needed)
+#lvm2
+#mdadm
+#nilfs-utils
+
+# Rescue/recovery tools (uncomment if needed)
+#ddrescue
+#fsarchiver
+#partclone
+#partimage
+#testdisk
+
+# Modem support (uncomment if needed)
+#modemmanager
+#usb_modeswitch
+#usbmuxd
+
+# Security/smartcard (uncomment if needed)
+#pcsclite
+#tpm2-tools
+#tpm2-tss
+
+# Network diagnostics (uncomment if needed)
+#nmap
+#tcpdump
+#ethtool
+#ndisc6
+
+# Hardware diagnostics (uncomment if needed)
+#dmidecode
+#hdparm
+#nvme-cli
+#smartmontools
+#sdparm
+#sg3_utils
+#lsscsi
+
+# Specialized firmware (uncomment if needed for specific hardware)
+#linux-firmware-bnx2x
+#linux-firmware-liquidio
+#linux-firmware-nfp
+#linux-firmware-qcom
+#linux-firmware-qlogic
+#linux-firmware-mellanox
+
+# File managers/utilities
+#mc
+
+# Cloud init
+#cloud-init
+
+# Misc utilities
+#bolt
+b43-fwcutter
+#gpm
+pv
+#less
+#ldns
+#sequoia-sq
+#udftools
+nbd
+#nfs-utils
+open-iscsi
