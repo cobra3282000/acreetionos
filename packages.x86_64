@@ -159,6 +159,7 @@ libpwquality
 diffutils
 fakeroot
 nano
+nano-syntax-highlighting
 zsh
 cups
 
