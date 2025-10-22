@@ -83,5 +83,7 @@ rm -rf cinnamon-configs
 
 #sudo pacman -S updater --noconfirm --overwrite '*'
 
+chown $name:$name /home/$name/.nanorc
+
 exit 0
 
