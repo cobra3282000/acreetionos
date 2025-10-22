@@ -1,0 +1,21 @@
+# AcreetionOS GRUB Theme
+desktop-image: "background.jpg"
+desktop-color: "#000000"
+title-text: ""
+title-color: "#FFFFFF"
+message-font: "Sans Regular 12"
+message-color: "#FFFFFF"
+terminal-font: "Sans Regular 12"
+
++ boot_menu {
+  left = 15%
+  top = 20%
+  width = 70%
+  height = 60%
+  item_color = "#FFFFFF"
+  selected_item_color = "#000000"
+  item_height = 24
+  item_padding = 8
+  item_spacing = 4
+  selected_item_pixmap_style = "select_*.png"
+}
