@@ -1,0 +1,69 @@
+# AcreetionOS Plymouth Theme Script
+
+# Load the background image
+background_image = Image("acreetion.png");
+screen_width = Window.GetWidth();
+screen_height = Window.GetHeight();
+
+# Get image dimensions
+image_width = background_image.GetWidth();
+image_height = background_image.GetHeight();
+
+# Calculate scaling to cover the entire screen while maintaining aspect ratio
+scale_width = screen_width / image_width;
+scale_height = screen_height / image_height;
+scale = Math.Max(scale_width, scale_height);
+
+# Scale the image
+resized_background_image = background_image.Scale(image_width * scale, image_height * scale);
+
+# Center the image
+x = (screen_width - resized_background_image.GetWidth()) / 2;
+y = (screen_height - resized_background_image.GetHeight()) / 2;
+
+# Create a sprite from the image and position it
+background_sprite = Sprite(resized_background_image);
+background_sprite.SetPosition(x, y, -100);
+
+# Message display (for boot messages)
+message_sprite = Sprite();
+message_sprite.SetPosition(10, 10, 10000);
+
+fun message_callback(text) {
+    my_image = Image.Text(text, 1, 1, 1);
+    message_sprite.SetImage(my_image);
+}
+
+Plymouth.SetMessageFunction(message_callback);
+
+# Simple callbacks for dialog functions
+fun display_normal_callback() {
+    global.status = "normal";
+}
+
+fun display_password_callback(prompt, bullets) {
+    global.status = "password";
+}
+
+fun display_message_callback(prompt) {
+    global.status = "message";
+}
+
+Plymouth.SetDisplayNormalFunction(display_normal_callback);
+Plymouth.SetDisplayPasswordFunction(display_password_callback);
+Plymouth.SetDisplayQuestionFunction(display_message_callback);
+Plymouth.SetDisplayMessageFunction(display_message_callback);
+
+# Refresh handler
+fun refresh_callback() {
+    # Nothing to do
+}
+
+Plymouth.SetRefreshFunction(refresh_callback);
+
+# Quit handler
+fun quit_callback() {
+    # Nothing to do
+}
+
+Plymouth.SetQuitFunction(quit_callback);
