@@ -1,0 +1,140 @@
+- name: "Latest Linux Kernel"
+  description: "Latest Kernel (recommended for everyday use)"
+  critical: false
+  hidden: false
+  selected: false
+  expanded: false
+  packages:
+    - linux
+    - linux-headers
+- name: "Latest Linux-Lts Kernel"
+  description: "Installs the Linux-Lts Kernel (stable older kernel)"
+  critical: false
+  hidden: false
+  selected: true
+  expanded: false
+  packages:
+    - linux-lts
+    - linux-lts-headers
+- name: "Latest Linux-Zen Kernel (Gamers recommended)"
+  description: "Installs the linux-zen kernel"
+  critical: false
+  hidden: false
+  selected: false
+  expanded: false
+  packages:
+    - linux-zen
+    - linux-zen-headers
+- name: "Nvidia for latest Linux Kernel"
+  description: "Installs nVidia Drivers for Linux"
+  critical: false
+  hidden: true
+  selected: true
+  expanded: false
+  packages:
+    - nvidia-dkms
+    - nvidia-settings
+    - nvidia-utils
+    - lib32-nvidia-utils
+- name: "Nvidia-Lts for Linux-Lts Kernel"
+  description: "Installs nVidia-LTS for Linux-Lts"
+  critical: false
+  hidden: false
+  selected: false
+  expanded: false
+  packages:
+    - nvidia-lts
+    - nvidia-settings
+    - nvidia-utils
+    - lib32-nvidia-utils
+    - nvidia-390xx-dkms
+- name: "Nvidia for Linux-Zen Kernel"
+  description: "Installs nVidia for Linux-Zen"
+  critical: false
+  hidden: false
+  selected: false
+  expanded: false
+  packages:
+    - nvidia-dkms
+    - nvidia-utils
+    - nvidia-settings
+    - vulkan-icd-loader
+    - lib32-vulkan-icd-loader
+    - lib32-nvidia-utils
+- name: "Nvidia-Lts for Linux-Zen Kernel"
+  description: "Installs nVidia-Lts for Linux-Zen Kernel"
+  critical: false
+  hidden: false
+  selected: false
+  expanded: false
+  packages:
+    - nvidia-lts
+    - nvidia-settings
+    - nvidia-utils
+    - nvidia-dkms
+    - vulkan-icd-loader
+    - lib32-vulkan-icd-loader
+    - lib32-nvidia-utils
+- name: "Nvidia Support Applications"
+  description: "Nvidia Support Applications"
+  critical: false
+  hidden: false
+  selected: false
+  expanded: false
+  packages:
+    - bumblebee
+    - disper
+    - nvidia-dkms
+    - nvidia-xrun
+    - optimus-manager
+    - optimus-manager-qt
+- name: "Intel Graphics Drivers"
+  description: "Installs Intel Graphics drivers"
+  critical: false
+  hidden: false
+  selected: false
+  expanded: false
+  packages:
+    - intel-media-driver
+    - intel-media-sdk
+    - lib32-mesa
+    - vulkan-intel
+    - vulkan-icd-loader
+    - lib32-vulkan-icd-loader
+- name: "AMD Graphics Drivers"
+  description: "Installs AMD Graphics drivers"
+  critical: false
+  hidden: false
+  selected: false
+  expanded: false
+  packages:
+    - lib32-mesa
+    - vulkan-intel
+    - vulkan-radeon
+    - lib32-vulkan-radeon
+    - vulkan-icd-loader
+    - lib32-vulkan-icd-loader
+- name: "Cuda Toolkit"
+  description: "Installs the Cuda Toolkit (support for Davinci Resolve, Blender)"
+  critical: false
+  hidden: false
+  selected: false
+  expanded: false
+  packages:
+    - cuda
+- name: "Intel-ucode (microcode)"
+  description: "Installs the intel-ucode microcode"
+  critical: false
+  hidden: false
+  selected: false
+  expanded: true
+  packages:
+    - intel-ucode
+- name: "Amd-ucode (microcode)"
+  description: "Installs the amd-ucode microcode"
+  critical: false
+  hidden: false
+  selected: false
+  expanded: false
+  packages:
+    - amd-ucode
