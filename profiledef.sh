@@ -34,6 +34,6 @@ file_permissions=(
   ["/usr/bin/calamares.sh"]="0:0:755"
   ["/usr/local/bin/preinstall"]="0:0:755"
   ["/usr/local/bin/stormos-final"]="0:0:755"
-  ["/usr/bin/wifi-connection.sh"]="0:0:755"
+  ["/usr/bin/wifi-connection"]="0:0:755"
   ["/usr/local/bin/setup-displays.sh"]="0:0:755"
 )

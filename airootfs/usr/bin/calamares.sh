@@ -1,5 +1,5 @@
 
-wifi-connection.sh
+wifi-connection
 
 cp /mkinitcpio/mkinitcpio.conf /etc/mkinitcpio.conf
 cp /mkinitcpio/archiso.conf /etc/mkinitcpio.conf.d
