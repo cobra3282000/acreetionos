@@ -68,15 +68,24 @@ mkdir -p /usr/share/backgrounds
 cp -r /backgrounds /usr/share/backgrounds
 rm -rf /backgrounds
 
-#chsh -s /bin/bash root
+# chsh -s /bin/bash root
 
 echo "Defaults pwfeedback" | sudo EDITOR='tee -a' visudo >/dev/null 2>&1
 
 #cp -r /cinnamon-configs/spices/* /home/$name/.config/cinnamon/spices/
 cp /etc/pacman2.conf pacman.conf
 cp /mkinitcpio/mkinitcpio.conf /etc/mkinitcpio.conf
-cp /mkinitcpio/archiso.conf /etc/mkinitcpio.conf.d
+# Don't copy archiso.conf - it's only for the live ISO
+# cp /mkinitcpio/archiso.conf /etc/mkinitcpio.conf.d/archiso.conf
 cp /cinnamon-configs/.nanorc /home/$name/.nanorc
+
+# Create placeholder dm-initramfs.rules for archiso hook compatibility
+# mkdir -p /usr/lib/initcpio/udev
+# echo "# Placeholder file for archiso hook compatibility" > /usr/lib/initcpio/udev/11-dm-initramfs.rules
+# echo "# dm-initramfs rules not needed since lvm2 is not included in this ISO" >> /usr/lib/initcpio/udev/11-dm-initramfs.rules
+
+# Remove archiso config if it exists
+rm -f /etc/mkinitcpio.conf.d/archiso.conf
 
 rm -rf /mkinitcpio
 rm -rf cinnamon-configs
@@ -84,6 +93,18 @@ rm -rf cinnamon-configs
 #sudo pacman -S updater --noconfirm --overwrite '*'
 
 chown $name:$name /home/$name/.nanorc
+
+# copy the new pacman over full of color!
+
+cp /usr/bin/pacman2 /usr/bin/pacman
+
+# fix lightdm issue after install
+
+rm -rf /etc/systemd/system/display-manager.service
+systemctl enable lightdm.service
+systemctl daemon-reload
+
+# rm /etc/xdg/autostart/calamares.desktop
 
 exit 0
 
