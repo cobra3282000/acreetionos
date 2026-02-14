@@ -1,0 +1,10 @@
+NAME="Acreetion-OS-v1.0"
+PRETTY_NAME="Acreetion Linux"
+ID=acreetion
+BUILD_ID=rolling
+ANSI_COLOR="38;2;23;147;209"
+HOME_URL="https://none.org/"
+DOCUMENTATION_URL="https://wiki.archlinux.org/"
+SUPPORT_URL="https://acreetionos-linux.github.io/"
+BUG_REPORT_URL="cobra3282000@live.com"
+PRIVACY_POLICY_URL="https://terms.archlinux.org/docs/privacy-policy/"

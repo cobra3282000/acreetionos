@@ -1,0 +1,363 @@
+################################################################################
+# AcreetionOS Package List
+# Optimized for minimal ISO size while maintaining full functionality
+################################################################################
+
+################################################################################
+# CORE SYSTEM - Essential base system packages
+################################################################################
+base
+linux
+linux-headers
+linux-atm
+linux-firmware
+linux-firmware-marvell
+linux-firmware-qlogic
+linux-firmware-whence
+mkinitcpio
+mkinitcpio-archiso
+mkinitcpio-nfs-utils
+mkinitcpio-busybox
+mkinitcpio-systemd-tool
+mkinitcpio-openswap
+sudo
+dbus
+polkit
+polkit-gnome
+arch-install-scripts
+
+################################################################################
+# BOOT & BOOTLOADER - Required for booting the ISO and installing bootloader
+################################################################################
+grub
+syslinux
+efibootmgr
+os-prober
+plymouth
+
+################################################################################
+# FILESYSTEM SUPPORT - Essential filesystem tools for installation
+################################################################################
+dosfstools
+e2fsprogs
+exfatprogs
+fatresize
+ntfs-3g
+squashfs-tools
+gptfdisk
+parted
+gpart
+device-mapper
+
+################################################################################
+# ENCRYPTION & SECURITY
+################################################################################
+cryptsetup
+
+################################################################################
+# ADVANCED STORAGE - Required for Calamares disk detection
+################################################################################
+lvm2
+mdadm
+
+################################################################################
+# NETWORKING - Core networking components
+################################################################################
+networkmanager
+network-manager-applet
+dhcpcd
+dhclient
+iw
+iwd
+wireless-regdb
+wireless_tools
+openssh
+rsync
+
+################################################################################
+# AUDIO SYSTEM
+################################################################################
+alsa-utils
+pipewire-pulse
+wireplumber
+pavucontrol
+sof-firmware
+
+################################################################################
+# DISPLAY SERVER & GRAPHICS
+################################################################################
+xorg
+mesa
+mesa-utils
+glu
+vulkan-headers
+ocl-icd
+opencl-headers
+directx-headers
+
+################################################################################
+# GRAPHICS DRIVERS
+################################################################################
+xf86-video-amdgpu
+xf86-video-intel
+xf86-video-nouveau
+xf86-input-libinput
+
+################################################################################
+# DISPLAY MANAGER
+################################################################################
+lightdm
+lightdm-gtk-greeter
+
+################################################################################
+# CINNAMON DESKTOP ENVIRONMENT
+################################################################################
+cinnamon
+cinnamon-control-center
+cinnamon-desktop
+cinnamon-menus
+cinnamon-session
+cinnamon-settings-daemon
+cinnamon-screensaver
+cinnamon-translations
+cjs
+muffin
+nemo
+gnome-terminal
+gnome-keyring
+gnome-themes-extra
+
+################################################################################
+# DESKTOP INTEGRATION & PORTALS
+################################################################################
+xdg-desktop-portal-xapp
+xdg-user-dirs
+xdg-user-dirs-gtk
+xdg-utils
+accountsservice
+
+################################################################################
+# QT6 LIBRARIES - Required for Calamares installer
+################################################################################
+qt6-5compat
+qt6-base
+qt6-declarative
+qt6-shadertools
+qt6-svg
+qt6-tools
+qt6-translations
+# qt6-wayland
+qt6-multimedia-ffmpeg
+qt6-multimedia-gstreamer
+qca-qt6
+kcrash
+
+################################################################################
+# CALAMARES INSTALLER - System installer and dependencies
+################################################################################
+calamares
+calamares-config
+kpmcore
+yaml-cpp
+libpwquality
+
+################################################################################
+# SYSTEM UTILITIES
+################################################################################
+diffutils
+fakeroot
+nano
+nano-syntax-highlighting
+zsh
+cups
+
+################################################################################
+# HARDWARE SUPPORT & UTILITIES
+################################################################################
+usbutils
+libusb-compat
+ddcutil
+broadcom-wl-dkms
+ppp
+nvme-cli
+smartmontools
+
+################################################################################
+# ACCESSIBILITY
+################################################################################
+espeakup
+
+################################################################################
+# LIBRARIES & DEPENDENCIES
+################################################################################
+gnutls
+glib-networking
+libnm
+libpulse
+libxcb
+libxrandr
+xfconf
+zlib
+nettle
+lib32-nettle
+libnsl
+
+################################################################################
+# PYTHON - Required for various system tools
+################################################################################
+python
+python-six
+python-pam
+python312-main
+
+################################################################################
+# APPLICATIONS
+################################################################################
+firefox
+electron31
+
+################################################################################
+# THEMES & ICONS
+################################################################################
+adwaita-icon-theme
+gnu-free-fonts
+
+################################################################################
+# MISCELLANEOUS
+################################################################################
+livecd-sounds
+mailcap
+mtools
+
+################################################################################
+# COMMENTED OUT - Previously included, kept for reference
+################################################################################
+# Hardware microcode (uncomment if needed for specific hardware)
+#amd-ucode
+#intel-ucode
+
+# Additional filesystems (uncomment if needed)
+#btrfs-progs
+#xfsprogs
+
+# Advanced features (uncomment if needed)
+#reflector
+#systemd-resolvconf
+
+# Alternative terminals
+#cosmic-terminal
+
+# File compression/archive tools
+#xarchiver
+
+# Backup tools
+#timeshift
+
+# Package managers
+#yay-bin
+#libpamac-aur
+pamac-gtk3
+
+# Media players
+vlc
+
+# System monitoring
+gnome-system-monitor
+
+# Themes
+#numix-themes
+mate-icon-theme-faenza
+
+# Text editors
+gedit
+
+# File managers
+webapp-manager
+
+# Network sharing
+samba
+
+# System info
+fastfetch
+
+# Development tools (uncomment if needed for building packages)
+base-devel
+git
+python-pip
+rust
+nodejs
+
+# Advanced networking (uncomment if needed)
+#bind
+#dnsmasq
+#openconnect
+#openvpn
+#pptpclient
+#rp-pppoe
+#vpnc
+#xl2tpd
+#wvdial
+
+# Virtualization guest tools (uncomment if needed)
+open-vm-tools
+qemu-guest-agent
+virtualbox-guest-utils-nox
+
+# Advanced storage (uncomment if needed)
+#nilfs-utils
+
+# Rescue/recovery tools (uncomment if needed)
+#ddrescue
+#fsarchiver
+#partclone
+#partimage
+#testdisk
+
+# Modem support (uncomment if needed)
+#modemmanager
+#usb_modeswitch
+#usbmuxd
+
+# Security/smartcard (uncomment if needed)
+#pcsclite
+#tpm2-tools
+#tpm2-tss
+
+# Network diagnostics (uncomment if needed)
+#nmap
+#tcpdump
+#ethtool
+#ndisc6
+
+# Hardware diagnostics (uncomment if needed)
+#dmidecode
+#hdparm
+#sdparm
+#sg3_utils
+#lsscsi
+
+# Specialized firmware (uncomment if needed for specific hardware)
+#linux-firmware-bnx2x
+#linux-firmware-liquidio
+#linux-firmware-nfp
+#linux-firmware-qcom
+#linux-firmware-mellanox
+
+# File managers/utilities
+#mc
+
+# Cloud init
+#cloud-init
+
+# Misc utilities
+#bolt
+b43-fwcutter
+#gpm
+pv
+#less
+#ldns
+#sequoia-sq
+#udftools
+nbd
+#nfs-utils
+open-iscsi

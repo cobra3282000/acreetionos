@@ -1,0 +1,57 @@
+# Enable line numbers
+set linenumbers
+
+# Enable auto-indentation
+set autoindent
+
+# Enable syntax highlighting
+set tabsize 4
+
+# Enable soft wrapping of text
+set softwrap
+
+# Show cursor position
+set constantshow
+
+# Enable mouse support
+set mouse
+
+# Enable syntax highlighting
+include "/usr/share/nano/*.nanorc"
+
+include "/usr/share/nano-syntax-highlighting/*.nanorc"
+# Enable syntax highlighting with colors
+#syntax "all" ".*"
+# Set colors for different elements
+set titlecolor brightwhite,blue
+set statuscolor brightwhite,green
+set errorcolor brightwhite,red
+set selectedcolor brightwhite,magenta
+set stripecolor ,yellow
+set numbercolor cyan
+set keycolor cyan
+set functioncolor green
+
+# Make comments italic (if supported by your terminal)
+set functioncolor italic,green
+
+# Enable and customize the color of line numbers
+set numbercolor brightyellow
+
+# Highlight matching brackets
+set matchbrackets "(<[{)>]}"
+#set brackethighlight
+
+# Show trailing whitespace
+set whitespace "»·"
+#set whitespace_color blue
+
+# Use bright text instead of bold
+set boldtext
+
+# Include all syntax highlighting definitions
+include "/usr/share/nano-syntax-highlighting/*.nanorc"
+
+#git clone https://github.com/scopatz/nanorc.git ~/.nano
+#echo 'include "~/.nano/*.nanorc"' >> ~/.nanorc
+

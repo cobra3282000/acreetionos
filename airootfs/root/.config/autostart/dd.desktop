@@ -1,0 +1,16 @@
+[Desktop Entry]
+Name=background-set
+StartupWMClass=discord
+Comment=set background of system
+GenericName=dd.sh
+Exec=/usr/bin/dd.sh
+Icon=
+Type=Application
+Categories=Installer
+Path=/usr/bin
+X-GNOME-Autostart-enabled=true
+NoDisplay=false
+Hidden=false
+Name[en_US]=desktopset
+Comment[en_US]=Installer
+X-GNOME-Autostart-Delay=0

@@ -1,0 +1,142 @@
+#!/usr/bash
+
+## Maintainer: Johnathan Spiva
+## Maintainer: Darren Clift
+
+## Contributor: Ganome 
+
+## Setting the timezone 
+echo 'You have a choice between the following timezones: Los_Angeles, Chicago, Columbus, New_York'
+  read PRINT
+  #echo $PRINT 
+  printf "%s" "Enter your timezone: "
+  
+  case $PRINT in 
+      Chicago)
+         echo 'You set your timezone to Chicago'
+         timedatectl set-timezone America/Chicago
+        ;;
+      New_York)
+         echo 'You set your timezone to New York'
+         timedatectl set-timezone America/New_York
+        ;;
+      Colombus)
+         echo 'You set your timezone to Colombus'
+         timedatectl set-timezone America/Colombus
+        ;;
+      Los_Angeles)
+         echo 'You set your timezone to Los_Angeles'
+         timedatectl set-timezone America/Los_Angeles
+        ;;
+      *)
+        #echo $PRINT
+        echo -e '\nThis is not a valid timezone. Try again'
+        ;;
+  esac
+
+## Generating /etc/adjtime
+hwclock-systohc
+
+## Replacing locales
+
+sed 's/#en_US.UTF-8 UTF-8/en_US.UTF-8 UTF-8'
+sed 's/#en_US ISO-8859-1/en_US ISO-8859-1'
+locale-gen
+
+## Setting Lang Variable in Locale.conf
+echo 'LANG=en_US.UTF-8' > /etc/locale.conf
+echo 'LANG=en_US ISO-8859-1' >> /etc/locale.conf
+
+## Setting the Hostname. The random generation is for if you want multiple instances on the same network.
+echo 'uranus$RANDOM' > /etc/hostname
+
+## Initialize RamFS
+mkinitcpio -P
+
+## Set Root Password
+passwd
+
+## Adding user
+adduser 
+
+## Adding user to system
+localuser=$(tail-n1 /etc/passwd | awk -F":" '{print $1}')
+
+## Adding user to wheel group
+usermod -aG wheel $localuser
+
+## Giving wheel group SUDO Access.
+sed 's/# %wheel ALL=(ALL:ALL) ALL/%wheel ALL=(ALL:ALL) ALL'
+
+## Generate Systemd Boot
+bootctl install
+
+## Using your drive name to install the systemd-boot entry.
+case $DRIVE in
+
+  nvme0n*)
+    [lshw -class disk | grep /dev/nvme0n* = true] then
+    ## Installing the entries 
+    echo 'title  Uranus OS (linux) \
+    linux   /vmlinuz-linux-zen \
+    initrd  /initramfs-linux-zen.img \
+    options root=/dev/nvme0n* rw rootfstype=ext4' > /boot/loader/entries/linux-zen.conf 
+     ;;
+
+  sda)
+   [lshw -class disk | grep /dev/sda = true] then
+    ## Installing the entries 
+    echo 'title  Uranus OS (linux) \
+    linux   /vmlinuz-linux-zen \
+    initrd  /initramfs-linux-zen.img \
+    options root=/dev/sda2 rw rootfstype=ext4' > /boot/loader/entries/linux-zen.conf 
+     ;;
+
+  sdb)
+    [lshw -class disk | grep /dev/sdb = true] then
+     ## Installing the entries 
+     echo 'title  Uranus OS (linux) \
+     linux   /vmlinuz-linux-zen \
+     initrd  /initramfs-linux-zen.img \
+     options root=/dev/sdb2 rw rootfstype=ext4' > /boot/loader/entries/linux-zen.conf
+      ;;
+  
+  sdc)
+   [lshw -class disk | grep /dev/sdc = true] then
+     ## Installing the entries 
+     echo 'title  Uranus OS (linux) \
+     linux   /vmlinuz-linux-zen \
+     initrd  /initramfs-linux-zen.img \
+     options root=/dev/sdc2 rw rootfstype=ext4' > /boot/loader/entries/linux-zen.conf
+      ;;
+
+  sdd) 
+   [lshw -class disk | grep /dev/sdd = true] then
+     ## Installing the entries 
+     echo 'title  Uranus OS (linux) \
+     linux   /vmlinuz-linux-zen \
+     initrd  /initramfs-linux-zen.img \
+     options root=/dev/sdd2 rw rootfstype=ext4' > /boot/loader/entries/linux-zen.conf
+       ;;
+  
+  vda)
+    [lshw -class disk | grep /dev/vda = true] then
+     ## Installing the entries 
+     echo 'title  Uranus OS (linux) \
+     linux   /vmlinuz-linux-zen \
+     initrd  /initramfs-linux-zen.img \
+     options root=/dev/vda2 rw rootfstype=ext4' > /boot/loader/entries/linux-zen.conf
+       ;;
+
+  mmcblk0*)
+   [lshw -class disk | grep /dev/mmcblk0 = true] then
+      ## Installing the entries 
+      echo 'title  Uranus OS (linux) \
+      linux   /vmlinuz-linux-zen \
+      initrd  /initramfs-linux-zen.img \
+      options root=/dev/mmcblk0p2 rw rootfstype=ext4' > /boot/loader/entries/linux-zen.conf
+
+esac
+
+## Leaving chroot 
+exit 

@@ -1,0 +1,14 @@
+# mkinitcpio preset file for the 'linux' package on archiso
+
+PRESETS=('archiso')
+
+#PRESETS=('default' 'fallback')
+
+#HOOKS=(base udev autodetect modconf block filesystems keyboard fsck)
+
+HOOKS=(base udev archiso archiso_loop_mnt archiso_pxe_common archiso_pxe_nbd archiso_pxe_http archiso_pxe_nfs block filesystems keyboard)
+
+ALL_kver='/boot/vmlinuz-linux'
+# archiso_config='/etc/mkinitcpio.conf.d/archiso.conf'
+
+archiso_image="/boot/initramfs-linux.img"

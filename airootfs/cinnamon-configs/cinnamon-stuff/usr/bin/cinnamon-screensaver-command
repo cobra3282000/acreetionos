@@ -1,0 +1,11 @@
+#!/bin/sh
+
+if [ "$XDG_SESSION_TYPE" = "wayland" ]; then
+  echo "cinnamon-screensaver is disabled in wayland sessions. Exiting."
+  exit 1
+fi
+
+export GI_TYPELIB_PATH="/usr/lib/cinnamon-screensaver/cinnamon-screensaver/girepository-1.0"
+export LD_LIBRARY_PATH="/usr/lib/cinnamon-screensaver/cinnamon-screensaver"
+
+exec /usr/share/cinnamon-screensaver/cinnamon-screensaver-command.py "$@"

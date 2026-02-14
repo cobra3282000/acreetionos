@@ -1,0 +1,6 @@
+# /usr/lib/calamares/modules/mkinitcpio/module.desc
+---
+type:       "job"
+name:       "mkinitcpio"
+interface:  "python"
+script:     "main.py"

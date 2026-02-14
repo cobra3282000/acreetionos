@@ -1,0 +1,771 @@
+/**
+ * FILE:util.js
+ * @short_description: File providing certain utility functions
+ *
+ * This file includes certain useful utility functions such as running external
+ * commands. It is generally a good idea to use the functions defined here
+ * instead of tapping into GLib directly since this adds some wrappers around
+ * the functions that make them more Cinnamon-friendly and provides helpful
+ * error messages.
+ */
+
+const GLib = imports.gi.GLib;
+const Gio = imports.gi.Gio;
+const Gtk = imports.gi.Gtk;
+const GObject = imports.gi.GObject;
+const Gir = imports.gi.GIRepository;
+const Clutter = imports.gi.Clutter;
+const Mainloop = imports.mainloop;
+const Main = imports.ui.main;
+const Params = imports.misc.params;
+
+const WIGGLE_OFFSET = 6;
+const WIGGLE_DURATION = 65;
+const N_WIGGLES = 3;
+
+// http://daringfireball.net/2010/07/improved_regex_for_matching_urls
+const _balancedParens = '\\([^\\s()<>]+\\)';
+const _leadingJunk = '[\\s`(\\[{\'\\"<\u00AB\u201C\u2018]';
+const _notTrailingJunk = '[^\\s`!()\\[\\]{};:\'\\".,<>?\u00AB\u00BB\u201C\u201D\u2018\u2019]';
+
+function decodeHTML(str=null) {
+    if (str === null) {
+        return null;
+    }
+
+    return str.replace(/&#(\d+);/g, function(match, dec) {
+        return String.fromCharCode(dec);
+    });
+}
+
+const _urlRegexp = new RegExp(
+    '(^|' + _leadingJunk + ')' +
+    '(' +
+        '(?:' +
+            '[a-z][\\w-]+://' +                   // scheme://
+            '|' +
+            'www\\d{0,3}[.]' +                    // www.
+            '|' +
+            '[a-z0-9.\\-]+[.][a-z]{2,4}/' +       // foo.xx/
+        ')' +
+        '(?:' +                                   // one or more:
+            '[^\\s()<>]+' +                       // run of non-space non-()
+            '|' +                                 // or
+            _balancedParens +                     // balanced parens
+        ')+' +
+        '(?:' +                                   // end with:
+            _balancedParens +                     // balanced parens
+            '|' +                                 // or
+            _notTrailingJunk +                    // last non-junk char
+        ')' +
+    ')', 'gi');
+
+
+/**
+ * escapeRegExp:
+ * @str: (String) a string to escape
+ *
+ * Escapes a string for use within a regular expression.
+ *
+ * Returns: (String) the escaped string
+ */
+function escapeRegExp(str) {
+    // from: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Regular_Expressions
+    return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); // $& means the whole matched string
+}
+
+/**
+ * findUrls:
+ * @str: string to find URLs in
+ *
+ * Searches @str for URLs and returns an array of objects with %url
+ * properties showing the matched URL string, and %pos properties indicating
+ * the position within @str where the URL was found.
+ *
+ * Returns: the list of match objects, as described above
+ */
+function findUrls(str) {
+    let res = [], match;
+    while ((match = _urlRegexp.exec(str)))
+        res.push({ url: match[2], pos: match.index + match[1].length });
+    return res;
+}
+
+/**
+ * spawn:
+ * @argv: an argv array
+ *
+ * Runs @argv in the background, handling any errors that occur
+ * when trying to start the program.
+ */
+function spawn(argv) {
+    let pid;
+
+    try {
+        pid = trySpawn(argv);
+    } catch (err) {
+        _handleSpawnError(argv[0], err);
+    }
+
+    return pid;
+}
+
+let subprocess_id = 0;
+var subprocess_callbacks = {};
+/**
+ * spawn_async:
+ * @args: an array containing all arguments of the command to be run
+ * @callback: the callback to run when the command has completed
+ *
+ * Asynchronously Runs the command passed to @args. When the command is complete, the callback will
+ * be called with the contents of stdout from the command passed as the only argument.
+ */
+function spawn_async(args, callback) {
+    subprocess_id++;
+    subprocess_callbacks[subprocess_id] = callback;
+    spawn(["cinnamon-subprocess-wrapper", subprocess_id.toString(), ...args]);
+}
+
+/**
+ * spawnCommandLine:
+ * @command_line: a command line
+ *
+ * Runs @command_line in the background, handling any errors that
+ * occur when trying to parse or start the program.
+ */
+function spawnCommandLine(command_line) {
+    let pid;
+
+    try {
+        let [success, argv] = GLib.shell_parse_argv(command_line);
+        pid = trySpawn(argv);
+    } catch (err) {
+        _handleSpawnError(command_line, err);
+    }
+
+    return pid;
+}
+
+/**
+ * trySpawn:
+ * @argv: an argv array
+ * @doNotReap: whether to set the DO_NOT_REAP_CHILD flag
+ *
+ * Runs @argv in the background. If launching @argv fails,
+ * this will throw an error.
+ */
+function trySpawn(argv, doNotReap)
+{
+    let spawn_flags = GLib.SpawnFlags.SEARCH_PATH
+                      | GLib.SpawnFlags.STDOUT_TO_DEV_NULL
+                      | GLib.SpawnFlags.STDERR_TO_DEV_NULL;
+
+    if (doNotReap) {
+        spawn_flags |= GLib.SpawnFlags.DO_NOT_REAP_CHILD;
+    }
+
+    let [success, pid] = GLib.spawn_async(null, argv, null, spawn_flags, null);
+    return pid;
+}
+
+/**
+ * trySpawnCommandLine:
+ * @command_line: a command line
+ *
+ * Runs @command_line in the background. If launching @command_line
+ * fails, this will throw an error.
+ */
+function trySpawnCommandLine(command_line) {
+    let pid;
+
+    let [success, argv] = GLib.shell_parse_argv(command_line);
+    pid = trySpawn(argv);
+
+    return pid;
+}
+
+/**
+ * spawnCommandLineAsync:
+ * @command_line: a command line
+ * @callback (function): called on success
+ * @errback (function): called on error
+ *
+ * Runs @command_line in the background. If the process exits without
+ * error, a callback will be called, or an error callback will be
+ * called if one is provided.
+ */
+function spawnCommandLineAsync(command_line, callback, errback) {
+    let pid;
+
+    let [success, argv] = GLib.shell_parse_argv(command_line);
+    pid = trySpawn(argv, true);
+
+    GLib.child_watch_add(GLib.PRIORITY_DEFAULT, pid, function(pid, status) {
+        GLib.spawn_close_pid(pid);
+
+        if (status !== 0) {
+            if (typeof errback === 'function') {
+                errback();
+            }
+        } else {
+            if (typeof callback === 'function') {
+                callback();
+            }
+        }
+    });
+}
+
+/**
+ * spawnCommandLineAsyncIO:
+ * @command: a command
+ * @callback (function): called on success or failure
+ * @opts (object): options: argv, flags, input
+ *
+ * Runs @command in the background. Callback has three arguments -
+ * stdout, stderr, and exitCode.
+ *
+ * Returns (object): a Gio.Subprocess instance
+ */
+function spawnCommandLineAsyncIO(command, callback, opts = {}) {
+    let {argv, flags, input} = opts;
+    if (!input) input = null;
+
+    let subprocess = new Gio.Subprocess({
+        argv: argv ? argv : ['bash', '-c', command],
+        flags: flags ? flags
+            : Gio.SubprocessFlags.STDOUT_PIPE | Gio.SubprocessFlags.STDIN_PIPE | Gio.SubprocessFlags.STDERR_PIPE,
+    });
+    subprocess.init(null);
+    let cancellable = new Gio.Cancellable();
+
+    subprocess.communicate_utf8_async(input, cancellable, (obj, res) => {
+        let success, stdout, stderr, exitCode;
+        // This will throw on cancel with "Gio.IOErrorEnum: Operation was cancelled"
+        tryFn(() => [success, stdout, stderr] = obj.communicate_utf8_finish(res));
+        if (typeof callback === 'function' && !cancellable.is_cancelled()) {
+            if (stderr && stderr.indexOf('bash: ') > -1) {
+                stderr = stderr.replace(/bash: /, '');
+            }
+            exitCode = success ? subprocess.get_exit_status() : -1;
+            callback(stdout, stderr, exitCode);
+        }
+        subprocess.cancellable = null;
+    });
+    subprocess.cancellable = cancellable;
+
+    return subprocess;
+}
+
+function _handleSpawnError(command, err) {
+    let title = _("Execution of '%s' failed:").format(command);
+    Main.notifyError(title, err.message);
+}
+
+/**
+ * killall:
+ * @processName: a process name
+ *
+ * Kills @processName. If no process with the given name is found,
+ * this will fail silently.
+ */
+function killall(processName) {
+    try {
+        // pkill is more portable than killall, but on Linux at least
+        // it won't match if you pass more than 15 characters of the
+        // process name... However, if you use the '-f' flag to match
+        // the entire command line, it will work, but we have to be
+        // careful in that case that we can match
+        // '/usr/bin/processName' but not 'gedit processName.c' or
+        // whatever...
+
+        let argv = ['pkill', '-f', '^([^ ]*/)?' + processName + '($| )'];
+        GLib.spawn_sync(null, argv, null, GLib.SpawnFlags.SEARCH_PATH, null);
+        // It might be useful to return success/failure, but we'd need
+        // a wrapper around WIFEXITED and WEXITSTATUS. Since none of
+        // the current callers care, we don't bother.
+    } catch (e) {
+        logError(e, 'Failed to kill ' + processName);
+    }
+}
+
+// This was ported from network-manager-applet
+// Copyright 2007 - 2011 Red Hat, Inc.
+// Author: Dan Williams <dcbw@redhat.com>
+
+const _IGNORED_WORDS = [
+        'Semiconductor',
+        'Components',
+        'Corporation',
+        'Communications',
+        'Company',
+        'Corp.',
+        'Corp',
+        'Co.',
+        'Inc.',
+        'Inc',
+        'Incorporated',
+        'Ltd.',
+        'Limited.',
+        'Intel',
+        'chipset',
+        'adapter',
+        '[hex]',
+        'NDIS',
+        'Module'
+];
+
+const _IGNORED_PHRASES = [
+        'Multiprotocol MAC/baseband processor',
+        'Wireless LAN Controller',
+        'Wireless LAN Adapter',
+        'Wireless Adapter',
+        'Network Connection',
+        'Wireless Cardbus Adapter',
+        'Wireless CardBus Adapter',
+        '54 Mbps Wireless PC Card',
+        'Wireless PC Card',
+        'Wireless PC',
+        'PC Card with XJACK(r) Antenna',
+        'Wireless cardbus',
+        'Wireless LAN PC Card',
+        'Technology Group Ltd.',
+        'Communication S.p.A.',
+        'Business Mobile Networks BV',
+        'Mobile Broadband Minicard Composite Device',
+        'Mobile Communications AB',
+        '(PC-Suite Mode)'
+];
+
+function fixupPCIDescription(desc) {
+    desc = desc.replace(/[_,]/, ' ');
+
+    /* Remove any parenthesized info longer than 2 chars (which
+       may be disambiguating numbers if there are multiple identical
+       cards present) */
+    desc = desc.replace(/\([\s\S][^\(\)]{2,}\)/, '');
+
+    /* Attempt to shorten ID by ignoring certain phrases */
+    for (let i = 0; i < _IGNORED_PHRASES.length; i++) {
+        let item = _IGNORED_PHRASES[i];
+        let pos = desc.indexOf(item);
+        if (pos != -1) {
+            let before = desc.substring(0, pos);
+            let after = desc.substring(pos + item.length, desc.length);
+            desc = before + after;
+        }
+    }
+
+    /* Attempt to shorten ID by ignoring certain individual words */
+    let words = desc.split(' ');
+    let out = [ ];
+    for (let i = 0; i < words.length; i++) {
+        let item = words[i];
+
+        // skip empty items (that come out from consecutive spaces)
+        if (item.length == 0)
+            continue;
+
+        if (_IGNORED_WORDS.indexOf(item) == -1) {
+            out.push(item);
+        }
+    }
+
+    return out.join(' ');
+}
+
+/**
+ * queryCollection:
+ * @collection (array): an array of objects to query
+ * @query (object): key-value pairs to find in the collection
+ * @indexOnly (boolean): defaults to false, returns only the matching
+ * object's index if true.
+ *
+ * Returns (object|null): the matched object, or null if no object
+ * in the collection matches all conditions of the query.
+ */
+function queryCollection(collection, query, indexOnly = false) {
+    let queryKeys = Object.keys(query);
+    for (let i = 0; i < collection.length; i++) {
+        let matches = 0;
+        for (let z = 0; z < queryKeys.length; z++) {
+            if (collection[i][queryKeys[z]] === query[queryKeys[z]]) {
+                matches += 1;
+            }
+        }
+        if (matches === queryKeys.length) {
+            return indexOnly ? i : collection[i];
+        }
+    }
+    return indexOnly ? -1 : null;
+}
+
+/**
+ * tryFn:
+ * @callback (function): Function to wrap in a try-catch block.
+ * @errCallback (function): The function to call on error.
+ *
+ * Try-catch can degrade performance in the function scope it is
+ * called in. By using a wrapper for try-catch, the function scope is
+ * reduced to the wrapper and not a potentially performance critical
+ * function calling the wrapper. Use of try-catch in any form will
+ * be slower than writing defensive code.
+ *
+ * Returns (any): The output of whichever callback gets called.
+ */
+function tryFn(callback, errCallback) {
+    try {
+        return callback();
+    } catch (e) {
+        if (typeof errCallback === 'function') {
+            return errCallback(e);
+        }
+    }
+};
+
+/**
+ * setTimeout:
+ * @callback (function): Function to call at the end of the timeout.
+ * @ms (number): Milliseconds until the timeout expires.
+ *
+ * Convenience wrapper for a Mainloop.timeout_add loop that
+ * returns false.
+ *
+ * Returns (number): The ID of the loop.
+ */
+function setTimeout(callback, ms) {
+    let args = [];
+    if (arguments.length > 2) {
+        args = args.slice.call(arguments, 2);
+    }
+
+    let id = Mainloop.timeout_add(ms, () => {
+        callback.call(null, ...args);
+        return false; // Stop repeating
+    }, null);
+
+    return id;
+};
+
+/**
+ * clearTimeout:
+ * @id (number): The ID of the loop to remove.
+ *
+ * Convenience wrapper for Mainloop.source_remove.
+ */
+function clearTimeout(id) {
+    if (id) Mainloop.source_remove(id);
+};
+
+
+/**
+ * setInterval:
+ * @callback (function): Function to call on every interval.
+ * @ms (number): Milliseconds between invocations.
+ *
+ * Convenience wrapper for a Mainloop.timeout_add loop that
+ * returns true.
+ *
+ * Returns (number): The ID of the loop.
+ */
+function setInterval(callback, ms) {
+    let args = [];
+    if (arguments.length > 2) {
+        args = args.slice.call(arguments, 2);
+    }
+
+    let id = Mainloop.timeout_add(ms, () => {
+        callback.call(null, ...args);
+        return true; // Repeat
+    }, null);
+
+    return id;
+};
+
+/**
+ * clearInterval:
+ * @id (number): The ID of the loop to remove.
+ *
+ * Convenience wrapper for Mainloop.source_remove.
+ */
+function clearInterval(id) {
+    if (id) Mainloop.source_remove(id);
+};
+
+/**
+ * throttle:
+ * @callback (function): Function to throttle.
+ * @interval (number): Milliseconds to throttle invocations to.
+ * @callFirst (boolean): Specify invoking on the leading edge of the timeout.
+ *
+ * Returns (any): The output of @callback.
+ */
+function throttle(callback, interval, callFirst) {
+    let wait = false;
+    let callNow = false;
+    return function() {
+        callNow = callFirst && !wait;
+        let context = this;
+        let args = arguments;
+        if (!wait) {
+            wait = true;
+            setTimeout(function() {
+                wait = false;
+                if (!callFirst) {
+                    return callback.apply(context, args);
+                }
+            }, interval);
+        }
+        if (callNow) {
+            callNow = false;
+            return callback.apply(this, arguments);
+        }
+    };
+}
+
+/**
+ * unref:
+ * @object (object): Object to be nullified.
+ * @reserved (array): List of special keys (string) that should not be assigned null.
+ *
+ * This will iterate @object and assign null to every property
+ * value except for keys specified in the @reserved array. Calling unref()
+ * in an object that has many references can make garbage collection easier
+ * for the engine. This should be used at the end of the lifecycle for
+ * classes that do not reconstruct very frequently, as GC thrashing can
+ * reduce performance.
+ */
+function unref(object, reserved = []) {
+    // Some actors being destroyed have a cascading effect (e.g. PopupMenu items),
+    // so it is safest to wait for the next 'tick' before removing references.
+    setTimeout(() => {
+        let keys = Object.keys(object);
+        for (let i = 0; i < keys.length; i++) {
+            if (!reserved.includes(keys[i])) {
+                object[keys[i]] = null;
+            }
+        }
+    }, 0);
+};
+
+// MIT © Petka Antonov, Benjamin Gruenbaum, John-David Dalton, Sindre Sorhus
+// https://github.com/sindresorhus/to-fast-properties
+let fastProto = null;
+const FastObject = function(o) {
+    if (fastProto !== null && typeof fastProto.property) {
+        const result = fastProto;
+        fastProto = FastObject.prototype = null;
+        return result;
+    }
+    fastProto = FastObject.prototype = o == null ? Object.create(null) : o;
+    return new FastObject;
+}
+FastObject();
+function toFastProperties(obj) {
+    Object.values(obj).forEach( value => {
+        if (value && !Array.isArray(value)) FastObject(value);
+    });
+};
+
+const READWRITE = GObject.ParamFlags.READABLE | GObject.ParamFlags.WRITABLE;
+
+// Based on https://gist.github.com/ptomato/c4245c77d375022a43c5
+function _getWritablePropertyNamesForObjectInfo(info) {
+    let propertyNames = [];
+    let propertyCount = Gir.object_info_get_n_properties(info);
+    for(let i = 0; i < propertyCount; i++) {
+        let propertyInfo = Gir.object_info_get_property(info, i);
+        let flags = Gir.property_info_get_flags(propertyInfo);
+        if ((flags & READWRITE) == READWRITE) {
+            propertyNames.push(propertyInfo.get_name());
+
+        }
+    }
+    return propertyNames;
+}
+
+/**
+ * getGObjectPropertyValues:
+ * @object (GObject.Object): GObject to inspect
+ *
+ * Returns (object): JS representation of the passed GObject
+ */
+function getGObjectPropertyValues(obj, r = 0) {
+    let repository = Gir.Repository.get_default();
+    let baseInfo = repository.find_by_gtype(obj.constructor.$gtype);
+    let propertyNames = [];
+    for (let info = baseInfo; info !== null; info = Gir.object_info_get_parent(info)) {
+        propertyNames = [...propertyNames, ..._getWritablePropertyNamesForObjectInfo(info)];
+    }
+    if (r > 0 && propertyNames.length === 0) {
+        return obj.toString();
+    }
+    let jsRepresentation = {};
+    for (let i = 0; i < propertyNames.length; i++) {
+        try {
+            let value = obj[propertyNames[i]];
+            if ((value instanceof GObject.Object) && r < 4) {
+                value = getGObjectPropertyValues(value, r + 1);
+            }
+            jsRepresentation[propertyNames[i]] = value;
+        } catch (e) {
+            /* Error: Can't convert non-null pointer to JS value */
+            jsRepresentation[propertyNames[i]] = '<non-null pointer>';
+        }
+    }
+    return jsRepresentation;
+}
+
+function version_exceeds(version, min_version) {
+    let our_version = version.split(".");
+    let cmp_version = min_version.split(".");
+    let i;
+
+    for (i = 0; i < our_version.length && i < cmp_version.length; i++) {
+        let our_part = parseInt(our_version[i]);
+        let cmp_part = parseInt(cmp_version[i]);
+
+        if (isNaN(our_part) || isNaN(cmp_part)) {
+            return false;
+        }
+
+        if (our_part < cmp_part) {
+            return false;
+        } else
+        if (our_part > cmp_part) {
+            return true;
+        }
+    }
+
+    if (our_version.length < cmp_version.length) {
+        return false;
+    } else {
+        return true;
+    }
+}
+
+// Maps .desktop action name to an icon
+const DESKTOP_ACTION_ICON_NAMES = {
+    area_shot: 'screenshot-area',
+    base: 'x-office-database',
+    big_picture: 'view-fullscreen',
+    calc: 'x-office-spreadsheet',
+    community: 'system-users',
+    compose: 'text-editor',
+    contacts: 'x-office-address-book',
+    document: 'document-new',
+    draw: 'x-office-drawing',
+    friends: 'user-available',
+    fullscreen: 'view-fullscreen',
+    impress: 'x-office-presentation',
+    library: 'accessories-dictionary',
+    math: 'x-office-math',
+    mute: 'audio-volume-muted',
+    new_document: 'document-new',
+    new_private_window: 'view-private',
+    new_root_window: 'dialog-password',
+    news: 'news',
+    new_session: 'tab-new-symbolic',
+    new_window: 'window-new',
+    next: 'media-skip-forward',
+    open_computer: 'computer',
+    open_home: 'user-home',
+    open_trash: 'user-trash',
+    play: 'media-playback-start',
+    play_pause: 'media-playback-start',
+    preferences: 'preferences-other',
+    prefs: 'preferences-other',
+    previous: 'media-skip-backward',
+    screen_shot: 'screenshot-fullscreen',
+    screenshots: 'applets-screenshooter',
+    servers: 'network-server',
+    settings: 'preferences-other',
+    ssa: 'screenshot-area',
+    ssf: 'screenshot-fullscreen',
+    ssw: 'screenshot-window',
+    stop_quit: 'media-playback-stop',
+    store: 'store',
+    window: 'window-new',
+    window_shot: 'screenshot-window',
+    writer: 'x-office-document',
+};
+
+/**
+ * getDesktopActionIcon:
+ * @action (string): Action name
+ *
+ * Returns (string|null): Name of the icon associated with this action or null if not found
+ */
+function getDesktopActionIcon(action) {
+    let actionID = '';
+    if (action.toUpperCase() === action) {
+        actionID = action.toLowerCase();
+    } else {
+        // first letter lowercase, replace uppercase with _+lowercase
+        actionID = action.charAt(0).toLowerCase() + action.slice(1);
+        actionID = actionID.replace(/([A-Z])/g, '_$1').toLowerCase();
+    }
+    actionID = actionID.replace(/-/g, '_');
+    
+    if (DESKTOP_ACTION_ICON_NAMES.hasOwnProperty(actionID))
+        return DESKTOP_ACTION_ICON_NAMES[actionID];
+    else return null;
+}
+
+/**
+ * splitByGlyph:
+ * @str (string): The string to be converted
+ *
+ * Converts a string, possibly containing multiple codepoint unicode characters (e.g. emoji), into
+ * an array of unicode graphemes clusters (glyphs). For example: "👩‍👩‍👧‍👧😃".length === 13, but splitByGlyph("👩‍👩‍👧‍👧😃")
+ * returns ["👩‍👩‍👧‍👧", "😃"] which is length 2.
+ * 
+ * Returns (array): Array of unicode grapheme clusters (glyphs).
+ */
+function splitByGlyph(str) {
+    const glyphs = [];
+    const buffer = new Gtk.TextBuffer();
+    buffer.set_text(str, -1);
+    const iter = buffer.get_start_iter();
+    const iter2 = buffer.get_start_iter();
+    
+    while (!iter2.is_end()) {
+        iter2.forward_cursor_position();
+        glyphs.push(buffer.get_text(iter, iter2, false));
+        iter.forward_cursor_position();
+    }
+    return glyphs;
+}
+
+function wiggle(actor, params) {
+    params = Params.parse(params, {
+        offset: WIGGLE_OFFSET,
+        duration: WIGGLE_DURATION,
+        wiggleCount: N_WIGGLES,
+    });
+    actor.translation_x = 0;
+
+    // Accelerate before wiggling
+    actor.ease({
+        translation_x: -params.offset,
+        duration: params.duration,
+        mode: Clutter.AnimationMode.EASE_OUT_QUAD,
+        onComplete: () => {
+            // Wiggle
+            actor.ease({
+                translation_x: params.offset,
+                duration: params.duration,
+                mode: Clutter.AnimationMode.LINEAR,
+                repeatCount: params.wiggleCount,
+                autoReverse: true,
+                onComplete: () => {
+                    // Decelerate and return to the original position
+                    actor.ease({
+                        translation_x: 0,
+                        duration: params.duration,
+                        mode: Clutter.AnimationMode.EASE_IN_QUAD,
+                    });
+                }
+            });
+        }
+    });
+}

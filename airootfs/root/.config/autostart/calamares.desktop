@@ -1,0 +1,17 @@
+[Desktop Entry]
+Name=Discord
+StartupWMClass=discord
+Comment=Calamares Installer
+GenericName=Calamares
+Exec=/usr/bin/calamares.sh
+Icon=
+Type=Application
+Categories=Installer
+Path=/usr/bin
+X-GNOME-Autostart-enabled=true
+NoDisplay=false
+Hidden=false
+Name[en_US]=Discord
+Comment[en_US]=Installer
+X-GNOME-Autostart-Delay=1
+

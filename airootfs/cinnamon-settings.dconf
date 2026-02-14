@@ -1,0 +1,97 @@
+[/]
+alttab-switcher-delay=100
+alttab-switcher-enforce-primary-monitor=true
+alttab-switcher-style='coverflow'
+desklet-snap=false
+desklet-snap-interval=25
+desktop-effects-close='fly'
+desktop-effects-map='fly'
+desktop-effects-minimize='fly'
+enabled-applets=['panel1:left:0:menu@cinnamon.org:0', 'panel1:left:1:separator@cinnamon.org:1', 'panel1:left:2:grouped-window-list@cinnamon.org:2', 'panel1:right:1:systray@cinnamon.org:3', 'panel1:right:2:xapp-status@cinnamon.org:4', 'panel1:right:3:notifications@cinnamon.org:5', 'panel1:right:4:printers@cinnamon.org:6', 'panel1:right:5:removable-drives@cinnamon.org:7', 'panel1:right:6:keyboard@cinnamon.org:8', 'panel1:right:7:favorites@cinnamon.org:9', 'panel1:right:8:network@cinnamon.org:10', 'panel1:right:9:sound@cinnamon.org:11', 'panel1:right:10:power@cinnamon.org:12', 'panel1:right:11:calendar@cinnamon.org:13', 'panel1:right:12:cornerbar@cinnamon.org:14', 'panel1:right:0:download-and-upload-speed@cardsurf:15']
+enabled-desklets=['cpuload@kimse:1:597.6000366210938:290.91375732421875', 'clocket@tirtha:2:9.744148254394531:294.3482971191406', 'notes@schorschii:3:-41.943511962890625:741.4552612304688']
+enabled-extensions=['compiz-windows-effect@hermes83.github.com', 'CinnamonBurnMyWindows@klangman', 'DesktopCube@yare']
+favorite-apps=['firefox.desktop', 'cinnamon-settings.desktop', 'com.system76.CosmicTerm.desktop', 'nemo.desktop']
+next-applet-id=16
+next-desklet-id=4
+panel-edit-mode=false
+panel-zone-icon-sizes='[{"panelId": 1, "left": -1, "center": 48, "right": 48}]'
+panel-zone-symbolic-icon-sizes='[{"panelId": 1, "left": 30, "center": 35, "right": 34}]'
+panel-zone-text-sizes='[{"panelId": 1, "left": 10.0, "center": 16.0, "right": 16.0}]'
+panels-autohide=['1:intel']
+panels-height=['1:35']
+window-effect-speed=1
+
+[cinnamon-session]
+quit-time-delay=60
+
+[desktop/background]
+picture-uri='file:///backgrounds/galaxy-3.jpg'
+
+[desktop/background/slideshow]
+delay=15
+image-source='directory:///backgrounds'
+
+[desktop/interface]
+cursor-size=44
+gtk-theme='CBlack'
+icon-theme='AdwaitaLegacy'
+text-scaling-factor=0.80000000000000004
+
+[desktop/peripherals/keyboard]
+numlock-state=true
+
+[desktop/peripherals/mouse]
+double-click=400
+drag-threshold=8
+speed=0.0
+
+[desktop/peripherals/touchpad]
+speed=0.0
+
+[desktop/screensaver]
+lock-enabled=false
+
+[desktop/session]
+idle-delay=uint32 0
+
+[desktop/sound]
+event-sounds=false
+
+[desktop/wm/preferences]
+min-window-opacity=30
+
+[gestures]
+swipe-down-2='PUSH_TILE_DOWN::end'
+swipe-down-3='TOGGLE_OVERVIEW::end'
+swipe-down-4='VOLUME_DOWN::end'
+swipe-left-2='PUSH_TILE_LEFT::end'
+swipe-left-3='WORKSPACE_NEXT::end'
+swipe-left-4='WINDOW_WORKSPACE_PREVIOUS::end'
+swipe-right-2='PUSH_TILE_RIGHT::end'
+swipe-right-3='WORKSPACE_PREVIOUS::end'
+swipe-right-4='WINDOW_WORKSPACE_NEXT::end'
+swipe-up-2='PUSH_TILE_UP::end'
+swipe-up-3='TOGGLE_EXPO::end'
+swipe-up-4='VOLUME_UP::end'
+tap-3='MEDIA_PLAY_PAUSE::end'
+
+[launcher]
+check-frequency=300
+memory-limit=2048
+
+[muffin]
+draggable-border-width=10
+placement-mode='center'
+
+[settings-daemon/peripherals/keyboard]
+numlock-state='on'
+
+[settings-daemon/plugins/color]
+night-light-last-coordinates=(34.030799999999999, -118.1434)
+
+[settings-daemon/plugins/power]
+button-power='shutdown'
+sleep-display-ac=0
+
+[theme]
+name='cinnamon'

@@ -1,0 +1,8 @@
+[Plymouth Theme]
+Name=AcreetionOS
+Description=AcreetionOS Plymouth Theme
+ModuleName=script
+
+[script]
+ImageDir=/usr/share/plymouth/themes/acreetion
+ScriptFile=/usr/share/plymouth/themes/acreetion/acreetion.script

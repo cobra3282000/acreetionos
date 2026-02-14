@@ -1,0 +1,306 @@
+{
+    "settings_start": {
+        "type": "separator"
+    },
+    "configuration": {
+        "type": "header",
+        "description": "Configuration"
+    },
+    "display_mode": {
+        "type": "combobox",
+        "default": 0,
+        "description": "Show",
+        "options": {
+            "Average speed per second": 0,
+            "Amount of data transferred": 1
+        },
+        "tooltip": "Values shown in the panel",
+        "value": 0
+    },
+    "unit_type": {
+        "type": "combobox",
+        "default": 0,
+        "description": "Unit",
+        "options": {
+            "Bytes": 0,
+            "Bits": 1
+        },
+        "tooltip": "Base data unit shown in the panel",
+        "value": 0
+    },
+    "is_binary": {
+        "type": "combobox",
+        "default": false,
+        "description": "Decimal or binary",
+        "options": {
+            "Decimal": false,
+            "Binary": true
+        },
+        "tooltip": "Decimal: k, M, G, T\nBinary: ki, Mi, Gi, Ti",
+        "value": false
+    },
+    "update_every": {
+        "type": "spinbutton",
+        "default": 1,
+        "min": 0.1,
+        "max": 60,
+        "step": 0.1,
+        "units": "seconds",
+        "description": "Calculate every",
+        "tooltip": "How often to calculate download and upload speed",
+        "value": 1
+    },
+    "update_available_interfaces_every": {
+        "type": "spinbutton",
+        "default": 5,
+        "min": 0,
+        "max": 85800,
+        "step": 1,
+        "units": "seconds",
+        "description": "Update available interfaces every",
+        "tooltip": "How often to update list of available network interfaces. 0 means list of available network interfaces is not updated periodically.",
+        "value": 5
+    },
+    "configuration_end": {
+        "type": "separator"
+    },
+    "gui_start": {
+        "type": "header",
+        "description": "Gui"
+    },
+    "gui_speed_type": {
+        "type": "combobox",
+        "default": 0,
+        "description": "Type",
+        "options": {
+            "Compact": 0,
+            "Large": 1
+        },
+        "tooltip": "Applet Gui",
+        "value": 0
+    },
+    "gui_value_order": {
+        "type": "combobox",
+        "default": 0,
+        "description": "Value order",
+        "options": {
+            "Download first": 0,
+            "Upload first": 1
+        },
+        "tooltip": "An order of values shown in the panel and in the hover popup",
+        "value": 0
+    },
+    "decimal_places": {
+        "type": "combobox",
+        "default": -1,
+        "description": "Decimal places",
+        "options": {
+            "Auto": -1,
+            "0 ": 0,
+            "1 ": 1,
+            "2 ": 2,
+            "3 ": 3
+        },
+        "tooltip": "Decimal places of download and upload speed shown in the panel",
+        "value": -1
+    },
+    "gui_text_css": {
+        "type": "entry",
+        "default": "font-weight: bold; font-size: 15px; text-align: right; font-family: monospace;",
+        "description": "Text CSS",
+        "tooltip": "A CSS style applied to the text in the panel",
+        "expand-width": true,
+        "value": "font-weight: bold; font-size: 15px; text-align: right; font-family: monospace;"
+    },
+    "gui_received_icon_filename": {
+        "type": "filechooser",
+        "default": "~/.local/share/cinnamon/applets/download-and-upload-speed@cardsurf/icons/arrow_down_blue.svg",
+        "description": "Download icon",
+        "tooltip": "An icon displayed next to download speed in the panel.\nTo display a symbolic icon make sure its name ends with '-symbolic.svg'.",
+        "value": "~/.local/share/cinnamon/applets/download-and-upload-speed@cardsurf/icons/arrow_down_blue.svg"
+    },
+    "gui_sent_icon_filename": {
+        "type": "filechooser",
+        "default": "~/.local/share/cinnamon/applets/download-and-upload-speed@cardsurf/icons/arrow_up_red.svg",
+        "description": "Upload icon",
+        "tooltip": "An icon displayed next to upload speed in the panel.\nTo display a symbolic icon make sure its name ends with '-symbolic.svg'.",
+        "value": "~/.local/share/cinnamon/applets/download-and-upload-speed@cardsurf/icons/arrow_up_red.svg"
+    },
+    "gui_symbolic_icon": {
+        "type": "switch",
+        "default": false,
+        "description": "Show a default set of symbolic icons",
+        "value": false
+    },
+    "hover_popup_text_css": {
+        "type": "entry",
+        "default": "font-size: 15px; padding: 5px; font-weight: normal;",
+        "description": "Popup text CSS",
+        "tooltip": "A CSS style applied to the description text in the hover popup",
+        "expand-width": true,
+        "value": "font-size: 15px; padding: 5px; font-weight: normal;"
+    },
+    "hover_popup_numbers_css": {
+        "type": "entry",
+        "default": "font-size: 15px; padding: 5px; font-weight: bold;",
+        "description": "Popup numbers CSS",
+        "tooltip": "A CSS style applied to numbers in the hover popup",
+        "expand-width": true,
+        "value": "font-size: 15px; padding: 5px; font-weight: bold;"
+    },
+    "minimum_bytes_received_to_display": {
+        "type": "spinbutton",
+        "default": 0,
+        "min": 0,
+        "max": 100000000,
+        "step": 1000,
+        "units": "bytes",
+        "description": "Minimum displayed download value",
+        "tooltip": "A minimum download value to display in the panel",
+        "value": 0
+    },
+    "minimum_bytes_sent_to_display": {
+        "type": "spinbutton",
+        "default": 0,
+        "min": 0,
+        "max": 100000000,
+        "step": 1000,
+        "units": "bytes",
+        "description": "Minimum displayed upload value",
+        "tooltip": "A minimum upload value to display in the panel",
+        "value": 0
+    },
+    "gui_end": {
+        "type": "separator"
+    },
+    "total_data_start": {
+        "type": "header",
+        "description": "Total data"
+    },
+    "show_hover": {
+        "type": "switch",
+        "default": true,
+        "description": "Show total download and upload on hover",
+        "tooltip": "Show the hover popup with total amount of data downloaded and uploaded",
+        "value": true
+    },
+    "bytes_start_time": {
+        "type": "combobox",
+        "default": -1,
+        "description": "Start",
+        "options": {
+            "Launch of applet": -1,
+            "Today": 0,
+            "Yesterday": 1,
+            "3 days ago": 3,
+            "5 days ago": 5,
+            "7 days ago": 7,
+            "10 days ago": 10,
+            "14 days ago": 14,
+            "30 days ago": 30,
+            "Custom date": -2
+        },
+        "tooltip": "Start time to count total amount of data downloaded and uploaded",
+        "value": -1
+    },
+    "custom_start_date": {
+        "type": "entry",
+        "default": "2000-01-01",
+        "description": "Custom date ",
+        "tooltip": "A custom date in YYYY-MM-DD format used as start time. The option is used if \"Custom date\" is selected in \"Start\" combobox.",
+        "expand-width": true,
+        "value": "2000-01-01"
+    },
+    "write_every": {
+        "type": "spinbutton",
+        "default": 600,
+        "min": 0,
+        "max": 85800,
+        "step": 10,
+        "units": "seconds",
+        "description": "Save every",
+        "tooltip": "How often to save total amount of data downloaded and uploaded to the file. 0 means no saving to the file.",
+        "value": 600
+    },
+    "total_data_end": {
+        "type": "separator"
+    },
+    "data_limit_start": {
+        "type": "header",
+        "description": "Data limits"
+    },
+    "data_limit": {
+        "type": "spinbutton",
+        "default": 0,
+        "min": 0,
+        "max": 100000,
+        "step": 0.1,
+        "units": "MB",
+        "description": "Data limit",
+        "tooltip": "The maximum amount of data to download and upload. 0 means no limits.",
+        "value": 0
+    },
+    "gui_data_limit_type": {
+        "type": "combobox",
+        "default": 0,
+        "description": "Show data limit usage",
+        "options": {
+            "None": 0,
+            "Circle": 1,
+            "Text": 2
+        },
+        "tooltip": "Show the percentage of data limit used in the panel",
+        "value": 0
+    },
+    "data_limit_command_enabled": {
+        "type": "switch",
+        "default": false,
+        "description": "Invoke command when data limit exceeded",
+        "tooltip": "Invoke a command when amount of data downloaded and uploaded exceeded the limit",
+        "value": false
+    },
+    "data_limit_command": {
+        "type": "entry",
+        "default": "echo \\\"Data limit exceeded. This terminal will close in 5 seconds.\\\"; sleep 5; exit 0;",
+        "description": "Command",
+        "tooltip": "A command to invoke",
+        "expand-width": true,
+        "value": "echo \\\"Data limit exceeded. This terminal will close in 5 seconds.\\\"; sleep 5; exit 0;"
+    },
+    "data_limit_end": {
+        "type": "separator"
+    },
+    "connections_start": {
+        "type": "header",
+        "description": "Connections"
+    },
+    "launch_terminal": {
+        "type": "switch",
+        "default": true,
+        "description": "List current Internet connections on left mouse click",
+        "tooltip": "Open a terminal with a list of current connections on a left mouse click. The next click closes the terminal.",
+        "value": true
+    },
+    "list_connections_command": {
+        "type": "entry",
+        "default": "watch -n 1 lsof -i",
+        "description": "Command ",
+        "tooltip": "A command used to list current Internet connections",
+        "expand-width": true,
+        "value": "watch -n 1 lsof -i"
+    },
+    "connections_end": {
+        "type": "separator"
+    },
+    "checked_interfaces_string": {
+        "type": "generic",
+        "default": "eth0",
+        "value": "enp7s0"
+    },
+    "unplugged_interfaces_string": {
+        "type": "generic",
+        "default": "",
+        "value": ""
+    },
+    "__md5__": "c6d1d3d8e8932ea6a9be26de468c65c7"
+}

@@ -1,0 +1,15 @@
+# Build directories
+work/
+out/
+../ISO/*.iso
+
+# Compiled binaries
+mkarchiso_wrapper
+*.o
+
+# Backup files
+*.bak
+*.save
+
+# Pacman cache
+/var/cache/pacman/pkg/*

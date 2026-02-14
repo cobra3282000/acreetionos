@@ -1,0 +1,8 @@
+[legacy/profiles:/:b1dcc9dd-5262-4d8d-a863-c897e6d979b9]
+background-color='rgb(23,20,33)'
+default-size-columns=132
+default-size-rows=43
+font='Monospace 14'
+foreground-color='rgb(208,207,204)'
+use-system-font=false
+use-theme-colors=false

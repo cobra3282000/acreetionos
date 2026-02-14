@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+# left bank so at least the os installs.  packages still nto working!
+
+# pacman-key --init
+# pacman-key --populate keyring
+

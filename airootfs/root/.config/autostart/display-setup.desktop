@@ -1,0 +1,9 @@
+[Desktop Entry]
+Type=Application
+Name=Display Setup
+Comment=Configure displays to mirror at 1080p
+Exec=/usr/local/bin/setup-displays.sh
+Terminal=false
+Hidden=false
+NoDisplay=false
+X-GNOME-Autostart-enabled=true

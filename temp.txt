@@ -1,0 +1,6 @@
+sudo ln -s /usr/lib/libicui18n.so.78 /usr/lib/libicui18n.so.76
+sudo ln -s /usr/lib/libicuuc.so.78 /usr/lib/libicuuc.so.76
+sudo ln -s /usr/lib/libicudata.so.78 /usr/lib/libicudata.so.76
+
+sudo ln -s /usr/lib/libicui18n.so.78.1 /usr/lib/libicui18n.so.76 sudo ln -s /usr/lib/libicuuc.so.78.1 
+/usr/lib/libicuuc.so.76 sudo ln -s /usr/lib/libicudata.so.78.1 /usr/lib/libicudata.so.76
