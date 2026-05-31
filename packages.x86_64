@@ -79,6 +79,7 @@ rsync
 # AUDIO SYSTEM
 ################################################################################
 alsa-utils
+pipewire
 pipewire-pulse
 wireplumber
 pavucontrol
@@ -132,6 +133,8 @@ gnome-themes-extra
 ################################################################################
 # DESKTOP INTEGRATION & PORTALS
 ################################################################################
+xdg-desktop-portal
+xdg-desktop-portal-gtk
 xdg-desktop-portal-xapp
 xdg-user-dirs
 xdg-user-dirs-gtk
