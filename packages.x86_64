@@ -183,6 +183,7 @@ usbutils
 libusb-compat
 ddcutil
 broadcom-wl-dkms
+r8125-dkms
 ppp
 nvme-cli
 smartmontools
