@@ -1,0 +1,21 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(xargs ls *)",
+      "Bash(glab api *)",
+      "Bash(python3 -c \"import sys,json; projects=json.load\\(sys.stdin\\); [print\\(f'ID: {p[\\\\\"id\\\\\"]} | {p[\\\\\"path_with_namespace\\\\\"]}'\\) for p in projects]\")",
+      "Bash(python3 -m json.tool)",
+      "Bash(python3 -c \"import sys,json; mirrors=json.load\\(sys.stdin\\); [print\\(f'ID: {m[\\\\\"id\\\\\"]} | enabled: {m[\\\\\"enabled\\\\\"]} | status: {m[\\\\\"update_status\\\\\"]} | url: {m[\\\\\"url\\\\\"]}'\\) for m in mirrors]\")",
+      "Bash(gh repo *)",
+      "Bash(git push *)",
+      "Bash(python3 -c \"import sys,json; mirrors=json.load\\(sys.stdin\\); [print\\(f'ID: {m[\\\\\"id\\\\\"]} | status: {m[\\\\\"update_status\\\\\"]} | last_success: {m[\\\\\"last_successful_update_at\\\\\"]} | error: {m[\\\\\"last_error\\\\\"]}'\\) for m in mirrors]\")",
+      "Bash(isoinfo -d -i /home/darren/packages/ISO/AcreetionOS-1.0-x86_64.iso)",
+      "Bash(fdisk *)",
+      "Bash(xxd /home/darren/packages/ISO/AcreetionOS-1.0-x86_64.iso)",
+      "Bash(xxd)",
+      "Bash(sudo mount *)",
+      "Bash(xxd /mnt/boot/syslinux/isolinux.bin)",
+      "Bash(sudo umount *)"
+    ]
+  }
+}
