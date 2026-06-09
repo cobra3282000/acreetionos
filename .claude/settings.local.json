@@ -15,7 +15,8 @@
       "Bash(xxd)",
       "Bash(sudo mount *)",
       "Bash(xxd /mnt/boot/syslinux/isolinux.bin)",
-      "Bash(sudo umount *)"
+      "Bash(sudo umount *)",
+      "Bash(mkarchiso --help)"
     ]
   }
 }

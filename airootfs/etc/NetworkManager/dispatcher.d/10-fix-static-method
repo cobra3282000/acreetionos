@@ -1,0 +1,28 @@
+#!/bin/bash
+# When a wired connection comes up with method=auto and static addresses
+# configured, convert it to method=manual. In NetworkManager >= 1.20,
+# static addresses in method=auto profiles are not used as a fallback when
+# DHCP fails -- this causes an infinite reconnect loop on networks without
+# a DHCP server.
+
+INTERFACE="$1"
+ACTION="$2"
+
+[[ "$ACTION" == "up" ]] || exit 0
+
+# Only act on ethernet interfaces
+[[ "$INTERFACE" == en* || "$INTERFACE" == eth* ]] || exit 0
+
+NM_DIR="/etc/NetworkManager/system-connections"
+
+for f in "$NM_DIR"/*.nmconnection; do
+    [[ -f "$f" ]] || continue
+
+    method=$(awk '/^\[ipv4\]/{f=1} f && /^method=/{print substr($0,8); exit} /^\[/ && !/^\[ipv4\]/{f=0}' "$f")
+    address=$(awk '/^\[ipv4\]/{f=1} f && /^address1=/{print $0; exit} /^\[/ && !/^\[ipv4\]/{f=0}' "$f")
+
+    if [[ "$method" == "auto" && -n "$address" ]]; then
+        sed -i '/^\[ipv4\]/,/^\[/{s/^method=auto$/method=manual/}' "$f"
+        nmcli connection reload 2>/dev/null || true
+    fi
+done

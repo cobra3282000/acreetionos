@@ -115,5 +115,29 @@ find /usr/share/backgrounds -type f -exec chmod 644 {} \;
 
 # rm /etc/xdg/autostart/calamares.desktop
 
+# Ensure a NetworkManager connection profile exists after install.
+# If Calamares did not copy one from the live session, NM has no profiles
+# and falls back to unreliable ephemeral auto-connections which break after updates.
+NM_CONN_DIR="/etc/NetworkManager/system-connections"
+mkdir -p "$NM_CONN_DIR"
+if [ -z "$(ls -A "$NM_CONN_DIR" 2>/dev/null)" ]; then
+    cat > "$NM_CONN_DIR/Wired-DHCP.nmconnection" << 'NMEOF'
+[connection]
+id=Wired-DHCP
+uuid=b3c4d5e6-f7a8-9012-bcde-f01234567890
+type=ethernet
+autoconnect=true
+
+[ethernet]
+
+[ipv4]
+method=auto
+
+[ipv6]
+method=disabled
+NMEOF
+    chmod 600 "$NM_CONN_DIR/Wired-DHCP.nmconnection"
+fi
+
 exit 0
 
