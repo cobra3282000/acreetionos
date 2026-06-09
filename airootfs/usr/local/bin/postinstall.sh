@@ -119,5 +119,9 @@ find /usr/share/backgrounds -type f -exec chmod 644 {} \;
 
 pacman -S amdnetworkfix --noconfirm
 
+# nredo the mkinitcpio stuff now!
+
+mkinitcpio -P
+
 exit 0
 
