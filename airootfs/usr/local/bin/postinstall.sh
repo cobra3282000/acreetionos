@@ -121,7 +121,7 @@ pacman -S amdnetworkfix --noconfirm
 
 # nredo the mkinitcpio stuff now!
 
-mkinitcpio -P
+# mkinitcpio -P
 
 exit 0
 
