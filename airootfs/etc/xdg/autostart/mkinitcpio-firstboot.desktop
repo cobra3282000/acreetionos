@@ -1,0 +1,7 @@
+[Desktop Entry]
+Type=Application
+Name=AcreetionOS First Boot Setup
+Exec=/usr/local/bin/firstboot-initramfs.sh
+Hidden=false
+NoDisplay=true
+X-GNOME-Autostart-enabled=true

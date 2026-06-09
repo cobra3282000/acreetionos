@@ -119,9 +119,10 @@ find /usr/share/backgrounds -type f -exec chmod 644 {} \;
 
 pacman -S amdnetworkfix --noconfirm
 
-# nredo the mkinitcpio stuff now!
-
-# mkinitcpio -P
+# schedule initramfs regeneration for first boot via desktop autostart
+touch /var/lib/mkinitcpio-firstboot-pending
+printf '%wheel ALL=(root) NOPASSWD: /usr/local/bin/firstboot-initramfs-root.sh\n' > /etc/sudoers.d/firstboot-mkinitcpio
+chmod 440 /etc/sudoers.d/firstboot-mkinitcpio
 
 exit 0
 
