@@ -58,9 +58,9 @@ prepare:deps:
 # ───────────────────────────────────────────────────────────────────
 # STAGE 2 – BUILD ISO
 # pacman.conf defines:
-#   [acreetionOSREPO-main]  iso.acreetionos.org:8448/repo-main/$arch
-#   [personal]              iso.acreetionos.org:8448/personal
-#   [temp-repo]             iso.acreetionos.org:8448/temp_repo/
+#   [acreetionOSREPO-main]  iso.acreetionos.org/repo-main/$arch
+#   [personal]              iso.acreetionos.org/personal
+#   [temp-repo]             iso.acreetionos.org/temp_repo/
 #   IgnorePkg = v4l2loopback-dkms
 #   ParallelDownloads = 25
 # ───────────────────────────────────────────────────────────────────
