@@ -22,7 +22,10 @@
       "Bash(rm /home/darren/packages/acreetionos/airootfs/etc/xdg/autostart/mkinitcpio-firstboot.desktop)",
       "Read(//home/darren/packages/acreetionos-xlibre/airootfs/etc/xdg/autostart/**)",
       "Bash(rm /home/darren/packages/acreetionos-xlibre/airootfs/etc/xdg/autostart/mkinitcpio-firstboot.desktop)",
-      "Read(//home/darren/packages/acreetionos-xlibre/**)"
+      "Read(//home/darren/packages/acreetionos-xlibre/**)",
+      "Bash(curl -s https://termbin.com/m0rf)",
+      "Bash(curl -s https://termbin.com/m0rf -o /home/darren/.claude/jobs/3f7701a6/tmp/calamares.log)",
+      "Bash(grep -rn \"kpmcore\\\\|xxglib2\\\\|xx\\\\${\" /home/darren/packages/calamares-config /home/darren/packages/calamares-config-live)"
     ]
   }
 }
