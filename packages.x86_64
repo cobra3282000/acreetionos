@@ -262,7 +262,7 @@ intel-ucode
 
 # Package managers
 #yay-bin
-#libpamac-aur
+libpamac-aur
 pamac-gtk3
 
 # Media players
