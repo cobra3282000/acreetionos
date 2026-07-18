@@ -375,3 +375,6 @@ dmraid
 bootfix
 gcc
 inetutils
+
+# firefox ublock stuff
+firefox-ublock-origin
