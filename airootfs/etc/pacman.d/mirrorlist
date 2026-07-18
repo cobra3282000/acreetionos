@@ -1,2 +1,2 @@
-Server = https://iso.acreetionos.org:8448/repo-main/$arch
-#Server = https://iso.acreetionos.org:8448/repo/$arch
+Server = https://iso.acreetionos.org/repo-main/$arch
+#Server = https://iso.acreetionos.org/repo/$arch

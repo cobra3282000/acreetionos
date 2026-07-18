@@ -6,6 +6,7 @@
 ################################################################################
 # CORE SYSTEM - Essential base system packages
 ################################################################################
+# testing push/pull's
 base
 linux
 linux-headers
@@ -79,6 +80,7 @@ rsync
 # AUDIO SYSTEM
 ################################################################################
 alsa-utils
+pipewire
 pipewire-pulse
 wireplumber
 pavucontrol
@@ -132,6 +134,8 @@ gnome-themes-extra
 ################################################################################
 # DESKTOP INTEGRATION & PORTALS
 ################################################################################
+xdg-desktop-portal
+xdg-desktop-portal-gtk
 xdg-desktop-portal-xapp
 xdg-user-dirs
 xdg-user-dirs-gtk
@@ -180,6 +184,7 @@ usbutils
 libusb-compat
 ddcutil
 broadcom-wl-dkms
+r8125-dkms
 ppp
 nvme-cli
 smartmontools
@@ -257,7 +262,7 @@ intel-ucode
 
 # Package managers
 #yay-bin
-#libpamac-aur
+libpamac-aur
 pamac-gtk3
 
 # Media players
@@ -368,6 +373,8 @@ autologger
 pacman
 dmraid
 bootfix
+gcc
+inetutils
 
-# Firefox Extensions
+# firefox ublock stuff
 firefox-ublock-origin

@@ -1,0 +1,33 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(xargs ls *)",
+      "Bash(glab api *)",
+      "Bash(python3 -c \"import sys,json; projects=json.load\\(sys.stdin\\); [print\\(f'ID: {p[\\\\\"id\\\\\"]} | {p[\\\\\"path_with_namespace\\\\\"]}'\\) for p in projects]\")",
+      "Bash(python3 -m json.tool)",
+      "Bash(python3 -c \"import sys,json; mirrors=json.load\\(sys.stdin\\); [print\\(f'ID: {m[\\\\\"id\\\\\"]} | enabled: {m[\\\\\"enabled\\\\\"]} | status: {m[\\\\\"update_status\\\\\"]} | url: {m[\\\\\"url\\\\\"]}'\\) for m in mirrors]\")",
+      "Bash(gh repo *)",
+      "Bash(git push *)",
+      "Bash(python3 -c \"import sys,json; mirrors=json.load\\(sys.stdin\\); [print\\(f'ID: {m[\\\\\"id\\\\\"]} | status: {m[\\\\\"update_status\\\\\"]} | last_success: {m[\\\\\"last_successful_update_at\\\\\"]} | error: {m[\\\\\"last_error\\\\\"]}'\\) for m in mirrors]\")",
+      "Bash(isoinfo -d -i /home/darren/packages/ISO/AcreetionOS-1.0-x86_64.iso)",
+      "Bash(fdisk *)",
+      "Bash(xxd /home/darren/packages/ISO/AcreetionOS-1.0-x86_64.iso)",
+      "Bash(xxd)",
+      "Bash(sudo mount *)",
+      "Bash(xxd /mnt/boot/syslinux/isolinux.bin)",
+      "Bash(sudo umount *)",
+      "Bash(mkarchiso --help)",
+      "Bash(git -C /home/darren/packages/acreetionos show d509d4a --stat)",
+      "Bash(git -C /home/darren/packages/acreetionos show d509d4a --name-only)",
+      "Bash(rm /home/darren/packages/acreetionos/airootfs/etc/xdg/autostart/mkinitcpio-firstboot.desktop)",
+      "Read(//home/darren/packages/acreetionos-xlibre/airootfs/etc/xdg/autostart/**)",
+      "Bash(rm /home/darren/packages/acreetionos-xlibre/airootfs/etc/xdg/autostart/mkinitcpio-firstboot.desktop)",
+      "Read(//home/darren/packages/acreetionos-xlibre/**)",
+      "Bash(curl -s https://termbin.com/m0rf)",
+      "Bash(curl -s https://termbin.com/m0rf -o /home/darren/.claude/jobs/3f7701a6/tmp/calamares.log)",
+      "Bash(grep -rn \"kpmcore\\\\|xxglib2\\\\|xx\\\\${\" /home/darren/packages/calamares-config /home/darren/packages/calamares-config-live)",
+      "WebSearch",
+      "Bash(git rev-list *)"
+    ]
+  }
+}

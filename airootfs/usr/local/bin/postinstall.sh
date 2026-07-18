@@ -1,4 +1,7 @@
 #!/bin/bash -e
+# NOTE: -e means any command that fails (returns non-zero) will abort this
+# script immediately with exit code 1, EXCEPT the pacman calls guarded by
+# has_inet, which are skipped (not errored) when there's no internet.
 #
 ##############################################################################
 #
@@ -16,6 +19,12 @@
 
  name=$(ls -1 /home)
  REAL_NAME=/home/$name
+
+# checks for a working internet connection before running pacman commands
+# so the script doesn't error out for users installing offline
+has_inet() {
+    ping -c 1 -W 2 archlinux.org &>/dev/null
+}
 
 # genfstab -U / > /etc/fstab
 
@@ -99,7 +108,11 @@ chown $name:$name /home/$name/.nanorc
 # setup new pacman with ping home
 # no data is collected only perpose of seeing how many users we have no date will be sold or used!
 
-sudo pacman -S pacman --noconfirm --overwrite '*'
+if has_inet; then
+    sudo pacman -S pacman --noconfirm --overwrite '*'
+else
+    echo "No internet connection detected, skipping pacman self-update."
+fi
 
 # fix lightdm issue after install
 
@@ -114,6 +127,19 @@ find /usr/share/backgrounds -type d -exec chmod 755 {} \;
 find /usr/share/backgrounds -type f -exec chmod 644 {} \;
 
 # rm /etc/xdg/autostart/calamares.desktop
+
+# install check for amd network fix.
+
+if has_inet; then
+    pacman -S amdnetworkfix --noconfirm
+else
+    echo "No internet connection detected, skipping amdnetworkfix install."
+fi
+
+# schedule initramfs regeneration for first boot via desktop autostart
+touch /var/lib/mkinitcpio-firstboot-pending
+printf '%%wheel ALL=(root) NOPASSWD: /usr/local/bin/firstboot-initramfs-root.sh\n' > /etc/sudoers.d/firstboot-mkinitcpio
+chmod 440 /etc/sudoers.d/firstboot-mkinitcpio
 
 exit 0
 

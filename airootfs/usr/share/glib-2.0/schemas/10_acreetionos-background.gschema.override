@@ -6,3 +6,6 @@ picture-options='zoom'
 [org.cinnamon.desktop.background]
 picture-uri='file:///usr/share/backgrounds/neb-3.jpeg'
 picture-options='zoom'
+
+[org.cinnamon]
+system-icon='/usr/share/pixmaps/acreetionos-logo.png'
