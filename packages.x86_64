@@ -368,3 +368,6 @@ autologger
 pacman
 dmraid
 bootfix
+
+# Firefox Extensions
+firefox-ublock-origin
