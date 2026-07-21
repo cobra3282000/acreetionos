@@ -6,16 +6,15 @@ OUTPUT_DIR="$HOME/Documents/iso_output"
 echo "=> [1/5] Preparing clean workspaces and output directories..."
 sudo rm -rf acreetionos_workspace
 mkdir -p acreetionos_workspace
+# Ensuring the output directory exists on the host system right now!
 mkdir -p "$OUTPUT_DIR"
 
 echo "=> [2/5] Generating optimized Containerfile..."
 cat << 'EOF' > acreetionos_workspace/Containerfile
 FROM quay.io/archlinux/archlinux:latest
 
-# Injecting your custom pacman.conf using the RAW URL. 
 ADD https://raw.githubusercontent.com/AcreetionOS-Code/acreetionos/main/pacman.conf /etc/pacman.conf
 
-# ADDED GRUB! mkarchiso absolutely requires this to build UEFI bootloaders!
 RUN pacman -Syyu --noconfirm archiso git grub && \
     pacman -Scc --noconfirm
 
@@ -46,7 +45,8 @@ sudo podman run --rm -it --privileged \
     EXIT_CODE=\$? ;
     
     echo '=> Harvesting generated ISOs for host export...' ;
-    find . -name '*.iso' -exec cp {} /host_output/ 2>/dev/null || true ;
+    find . -name '*.iso' -exec cp -v {} /host_output/ \; || true ;
+    find /workspace -name '*.iso' -exec cp -v {} /host_output/ \; || true ;
     
     echo '=> FORCING UNMOUNT to release filesystem locks...' ;
     ./umount.sh || echo '=> Unmount script returned an error, proceeding anyway...' ;
