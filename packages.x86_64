@@ -130,6 +130,7 @@ nemo
 gnome-terminal
 gnome-keyring
 gnome-themes-extra
+geocode-glib
 
 ################################################################################
 # DESKTOP INTEGRATION & PORTALS
