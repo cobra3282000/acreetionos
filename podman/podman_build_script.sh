@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -e
 
-OUTPUT_DIR="$HOME/Documents/iso_output"
+OUTPUT_DIR="$HOME/Documents/x11_iso_output"
 
 echo "=> [1/5] Preparing clean workspaces and output directories..."
 sudo rm -rf acreetionos_workspace
