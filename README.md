@@ -14,6 +14,7 @@ AcreetionOS Linux is a community-driven effort to build a lightweight, versatile
 - Standardized Package Selection
 - User-friendly installation process
 - x86_64 friendly.
+- **Built-in Recovery System** (WinRE-style): Timeshift snapshots, a self-contained recovery partition with its own bootloader, F9 chainload entry and automatic boot-failover. See [docs/RECOVERY.md](docs/RECOVERY.md).
 
 ## Getting Started
 
