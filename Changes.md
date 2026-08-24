@@ -7,4 +7,18 @@
 7. Replaced Console with Mate Terminal because it works, added glu
 8. Added xorg-xmessage
 9. totally converted to acreetion os now days!  no not put arch repo's back in system will break its key ring!
+10. Added the AcreetionOS Recovery Environment (branch `recovery`), a Windows-Recovery-style maintenance mode:
+    - New boot menu entry "AcreetionOS Recovery Environment" in GRUB and SYSLINUX that boots the live system into
+      `acreetion-recovery.target` (`acreetion_recovery=1 systemd.unit=acreetion-recovery.target`)
+    - `acreetion-recovery` (TUI, whiptail) themed with the AcreetionOS website palette (#2ecc71 green on #121212 dark),
+      including a VT console palette remap so the whole recovery TTY matches the brand
+    - Tools: Timeshift snapshot restore/create/setup/browse, package repair (keyring + upgrade + broken deps),
+      filesystem check (fsck), GRUB reinstall / boot repair (BIOS + UEFI with dual-boot os-prober),
+      fstab regeneration, password reset, network setup (nmtui), hardware info, log viewer,
+      chroot shell and live shell
+    - Automatic detection and mounting of any installed Linux system (multi-boot aware)
+    - systemd units: `acreetion-recovery.target` + `acreetion-recovery.service` (tty1)
+    - Desktop launcher "AcreetionOS Recovery" in the live session
+    - postinstall.sh now configures Timeshift (RSYNC snapshots) on fresh installs so recovery works from day one
+    - New packages: timeshift, testdisk, ddrescue, fsarchiver, gparted, dialog, libnewt (whiptail), inxi
 

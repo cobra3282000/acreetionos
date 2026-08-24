@@ -141,5 +141,38 @@ touch /var/lib/mkinitcpio-firstboot-pending
 printf '%%wheel ALL=(root) NOPASSWD: /usr/local/bin/firstboot-initramfs-root.sh\n' > /etc/sudoers.d/firstboot-mkinitcpio
 chmod 440 /etc/sudoers.d/firstboot-mkinitcpio
 
+##############################################################################
+# Recovery system: give the fresh install Timeshift snapshots from day one so
+# users can always roll back via "AcreetionOS Recovery Environment".
+# Snapshots are stored on the root filesystem (RSYNC mode) by default; users
+# can move them to a dedicated disk later with Timeshift or the recovery tool.
+##############################################################################
+if command -v timeshift >/dev/null 2>&1; then
+    ROOT_UUID=$(findmnt -rno UUID -T / 2>/dev/null | head -n1)
+    mkdir -p /etc/timeshift
+    if [ ! -f /etc/timeshift/timeshift.json ]; then
+        python3 - "$ROOT_UUID" > /etc/timeshift/timeshift.json <<'PY'
+import json, sys, os
+cfg = {
+    "backup_device_uuid": sys.argv[1] if len(sys.argv) > 1 else "",
+    "parent_device_uuid": "",
+    "do_first_run_snapshots": True,
+    "exclude_app_patterns": [],
+    "exclude_patterns": [
+        "/root/.cache/**", "/home/*/.cache/**", "/home/*/Downloads/**",
+        "/home/*/.local/share/Trash/**", "/var/tmp/**", "/var/crash/**"
+    ],
+    "include_folders_config": [],
+    "exclude_restore_targets": [],
+    "remove_old_snapshots": True,
+    "count_of_daily": 5, "count_of_weekly": 3, "count_of_monthly": 2,
+    "count_of_yearly": 1, "stop_cron_emails": True,
+    "btrfs_mode": False, "rsync_options": "", "snapshots_full_device_uuid": ""
+}
+json.dump(cfg, open("/etc/timeshift/timeshift.json", "w"), indent=2)
+PY
+    fi
+fi
+
 exit 0
 

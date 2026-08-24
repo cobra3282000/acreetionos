@@ -259,7 +259,7 @@ intel-ucode
 #xarchiver
 
 # Backup tools
-#timeshift
+timeshift
 
 # Package managers
 #yay-bin
@@ -315,11 +315,13 @@ virtualbox-guest-utils-nox
 #nilfs-utils
 
 # Rescue/recovery tools (uncomment if needed)
-#ddrescue
-#fsarchiver
-#partclone
-#partimage
-#testdisk
+ddrescue
+fsarchiver
+testdisk
+gparted
+dialog
+libnewt
+inxi
 
 # Modem support (uncomment if needed)
 #modemmanager

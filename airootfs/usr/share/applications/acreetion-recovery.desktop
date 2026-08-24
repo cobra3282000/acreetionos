@@ -1,0 +1,13 @@
+[Desktop Entry]
+Type=Application
+Version=1.0
+Name=AcreetionOS Recovery
+GenericName=Recovery Environment
+Comment=System restore, Timeshift snapshots, package/boot/filesystem repair
+Exec=sudo -E /usr/bin/acreetion-recovery
+TryExec=/usr/bin/acreetion-recovery
+Icon=acreetion-recovery
+Terminal=true
+Categories=System;Utility;X-Acreetion;
+Keywords=recovery;restore;timeshift;repair;backup;rescue;
+StartupNotify=false

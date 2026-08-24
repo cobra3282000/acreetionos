@@ -38,4 +38,5 @@ file_permissions=(
   ["/usr/bin/wifi-connection"]="0:0:755"
   ["/usr/local/bin/setup-displays.sh"]="0:0:755"
   ["/etc/NetworkManager/dispatcher.d/10-fix-static-method"]="0:0:755"
+  ["/usr/bin/acreetion-recovery"]="0:0:755"
 )

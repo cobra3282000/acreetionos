@@ -1,0 +1,11 @@
+[Unit]
+Description=AcreetionOS Recovery Environment
+Documentation=man:acreetion-recovery(8)
+Requires=sysinit.target
+Wants=network-online.target NetworkManager.service systemd-resolved.service acreetion-recovery.service
+After=acreetion-recovery.service
+Conflicts=rescue.service single-user.target
+AllowIsolate=yes
+
+[Install]
+WantedBy=sysinit.target

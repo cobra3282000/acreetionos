@@ -1,0 +1,26 @@
+[Unit]
+Description=AcreetionOS Recovery Environment (TUI on tty1)
+After=systemd-user-sessions.service getty@tty1.service plymouth-quit-wait.service
+Conflicts=getty@tty1.service display-manager.service
+Before=display-manager.service
+ConditionKernelCommandLine=|acreetion_recovery=1
+ConditionPathExists=/usr/bin/acreetion-recovery
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+IgnoreOnIsolate=yes
+SyslogIdentifier=acreetion-recovery
+StandardInput=tty
+StandardOutput=tty
+StandardError=tty
+TTYPath=/dev/tty1
+TTYReset=yes
+TTYVHangup=yes
+ExecStartPre=/usr/bin/chvt 1
+ExecStart=-/usr/bin/acreetion-recovery
+ExecStopPost=/bin/sh -c 'chvt 1 || true'
+TimeoutStartSec=infinity
+
+[Install]
+WantedBy=acreetion-recovery.target
