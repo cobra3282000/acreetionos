@@ -299,6 +299,7 @@ repair_packages() {
     ensure_mounted || return 1
     confirm " Repair Packages " \
 "This will, inside the selected system:\n  • re-initialise pacman keyring + refresh keys\n  • synchronise databases and upgrade all packages\n  • attempt to fix broken dependencies\n\nAn internet connection is required. Continue?" 13 70 || return 0
+    ensure_network || true
     run_in_terminal "Repairing packages" bash -c '
         set -x
         arch-chroot '"$TARGET"' bash -exc "
@@ -422,11 +423,29 @@ reset_password() {
 }
 
 network_setup() {
+    ensure_network || true
     if command -v nmtui >/dev/null; then
         nmtui </dev/tty >/dev/tty 2>&1 || true
     else
         info_box " Network " "NetworkManager TUI (nmtui) is unavailable." 8 46
     fi
+}
+
+ensure_network() {
+    # The recovery boot target intentionally does NOT wait for networking.
+    # Start NetworkManager on demand (a few seconds) only when an action
+    # actually needs a link.
+    systemctl is-active --quiet NetworkManager.service && return 0
+    msg "Starting network management (on demand)..."
+    systemctl start NetworkManager.service >/dev/null 2>&1
+    local i=0
+    while (( i < 10 )); do
+        nmcli -t -f STATE general 2>/dev/null | grep -q '^connected' && return 0
+        sleep 1; (( i++ ))
+    done
+    systemctl is-active --quiet NetworkManager.service && return 0
+    err "Network could not be started."
+    return 1
 }
 
 hw_info() {
@@ -540,8 +559,6 @@ main() {
     : >"$LOG"
     chmod 600 "$LOG" 2>/dev/null
     show_banner
-    # Give slow storage/network devices a moment to appear.
-    sleep 1
     main_menu
     clear
     exit 0

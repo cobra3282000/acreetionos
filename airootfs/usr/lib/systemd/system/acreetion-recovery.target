@@ -2,7 +2,11 @@
 Description=AcreetionOS Recovery Environment
 Documentation=man:acreetion-recovery(8)
 Requires=sysinit.target
-Wants=network-online.target NetworkManager.service systemd-resolved.service acreetion-recovery.service acreetion-boot-success.service
+# Deliberately MINIMAL: no network-online (the classic multi-minute stall on
+# headless/broken links), no display manager, no local-fs extras beyond what
+# the kernel/initramfs already mounted. Networking is started on demand by
+# the TUI (nmtui / package repair). Boot reaches the menu in seconds.
+Wants=acreetion-recovery.service acreetion-boot-success.service
 After=acreetion-recovery.service
 Conflicts=rescue.service single-user.target
 AllowIsolate=yes

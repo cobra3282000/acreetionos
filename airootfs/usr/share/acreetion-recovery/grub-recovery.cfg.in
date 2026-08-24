@@ -11,7 +11,10 @@
 # @UCODE@       microcode initrd lines ("" if none)
 
 set default=recovery-first
-set timeout=5
+# Near-instant entry: hidden 1s countdown. Pressing any arrow key / ESC
+# reveals the full menu (normal-boot fallback etc.).
+set timeout=1
+set timeout_style=hidden
 
 insmod all_video
 insmod gfxterm
@@ -22,10 +25,11 @@ if loadfont /boot/grub/fonts/unicode.pf2.gz ; then
 fi
 
 # All payload files are stored gzip-compressed; gzio decompresses them
-# transparently at load time.
+# transparently at load time. plymouth.enable=0 keeps the recovery path on
+# the plain console (plymouth only adds seconds here).
 menuentry 'AcreetionOS Recovery Environment' --hotkey=r --id recovery-first --class recovery --class os {
     set gfxpayload=keep
-    linux /vmlinuz-linux.gz root=PARTUUID=@ROOT_IDENT@ rw acreetion_recovery=1 systemd.unit=acreetion-recovery.target loglevel=3 vt.global_cursor_default=0
+    linux /vmlinuz-linux.gz root=PARTUUID=@ROOT_IDENT@ rw acreetion_recovery=1 systemd.unit=acreetion-recovery.target plymouth.enable=0 loglevel=3 vt.global_cursor_default=0
     initrd @UCODE@ /initramfs-linux.img.gz
 }
 

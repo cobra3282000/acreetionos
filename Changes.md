@@ -32,6 +32,9 @@
     - pacman hook keeps the partition's kernel copies in sync on linux upgrades
     - compressed footprint: payloads stored gzip -9 (GRUB gzio decompresses at boot),
       fallback initramfs omitted, ext4 without journal/reserved blocks; carve shrunk 800→512MiB
+    - fast-boot design: recovery target starts only sysinit + TUI (no network-online
+      wait, no DM); NetworkManager starts on demand inside the TUI; plymouth disabled
+      on recovery entries; hidden 1s menu in the partition's GRUB
     - `--auto` / `--device <part>` / `--sync-kernels` modes; also usable from the live ISO to
       retrofit recovery onto existing installs
 

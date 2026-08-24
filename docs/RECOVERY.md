@@ -169,11 +169,30 @@ Notes:
 * `06_acreetion-default` emits the primary menu entry (before `10_linux`) and
   setup sets `GRUB_DEFAULT="acreetion-default"` so the tracked entry is what
   actually boots.
-* Entering recovery clears the flag (a successful recovery boot counts as
-  success), so after you fix things and reboot, the normal path is tried
-  again — if it fails again, failover re-triggers. No loops.
+* The flag is cleared by **two** paths, both guarded (`/boot` may itself be
+  broken): `acreetion-boot-success.service` on healthy normal boots, and the
+  recovery service's `ExecStartPre` when a recovery boot reaches the menu.
+  Entering recovery counts as success, so after you fix things and reboot,
+  the normal path is tried again — if it fails again, failover re-triggers.
+  No loops.
 * The flag lives in the standard grubenv block; `boot_once` semantics prevent
   writes during one-shot boots.
+
+### Fast-boot design
+
+The recovery path is deliberately stripped to reach the menu in seconds:
+
+* the boot target pulls **only** `sysinit.target` + the TUI — no display
+  manager, no desktop stack;
+* **no `network-online.target`**: the classic multi-minute stall on broken or
+  headless links is avoided entirely. NetworkManager starts *on demand* inside
+  the TUI only for network setup / package repair;
+* plymouth is disabled on all recovery entries (`plymouth.enable=0`, no
+  `splash`) so nothing hides or delays the console the TUI draws on;
+* the partition's own GRUB uses a hidden 1s countdown (arrow keys/ESC reveal
+  its menu);
+* remaining costs are irreducible: kernel init, udev settle in sysinit, and
+  one gzip decompression of the initramfs (~1-2s).
 
 ---
 

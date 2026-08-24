@@ -1,7 +1,7 @@
 [Unit]
 Description=Clear GRUB recordfail flag after successful boot
 Documentation=man:grub-editenv(1)
-After=multi-user.target
+After=local-fs.target multi-user.target
 ConditionPathExists=/boot/grub/grubenv
 
 [Service]
