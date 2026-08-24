@@ -136,6 +136,14 @@ else
     echo "No internet connection detected, skipping amdnetworkfix install."
 fi
 
+# Recovery partition: provision the WinRE-style offline recovery environment
+# (own bootloader + kernel copies + F9/failover chainload entry). Fully
+# guarded - only carves a partition inside a genuine unpartitioned gap and
+# exits cleanly with guidance when there is no safe space.
+if command -v acreetion-recovery-setup >/dev/null 2>&1; then
+    acreetion-recovery-setup --auto || true
+fi
+
 # schedule initramfs regeneration for first boot via desktop autostart
 touch /var/lib/mkinitcpio-firstboot-pending
 printf '%%wheel ALL=(root) NOPASSWD: /usr/local/bin/firstboot-initramfs-root.sh\n' > /etc/sudoers.d/firstboot-mkinitcpio

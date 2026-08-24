@@ -1,0 +1,36 @@
+# AcreetionOS Recovery Environment - standalone bootloader config
+#
+# This grub.cfg lives ON the recovery partition (ACRECOVERY) and belongs to
+# the partition's own GRUB. The main bootloader chainloads this whole
+# partition (F9 hotkey entry or automatic failover after a failed boot).
+# It boots the kernel COPIES stored here, so it works even when the main
+# system's /boot is damaged.
+#
+# @ROOT_IDENT@  PARTUUID of the installed system's root
+# @CMDLINE@     normal-boot kernel parameters from /etc/default/grub
+# @UCODE@       microcode initrd lines ("" if none)
+
+set default=recovery-first
+set timeout=5
+
+insmod all_video
+insmod gfxterm
+terminal_output gfxterm
+if loadfont /boot/grub/fonts/unicode.pf2 ; then
+    set gfxmode=auto
+fi
+
+menuentry 'AcreetionOS Recovery Environment' --hotkey=r --id recovery-first --class recovery --class os {
+    set gfxpayload=keep
+    linux /vmlinuz-linux root=PARTUUID=@ROOT_IDENT@ rw acreetion_recovery=1 systemd.unit=acreetion-recovery.target loglevel=3 vt.global_cursor_default=0
+    initrd @UCODE@ /initramfs-linux.img
+}
+
+menuentry 'Boot AcreetionOS normally' --class gnu-linux --class os {
+    set gfxpayload=keep
+    linux /vmlinuz-linux root=PARTUUID=@ROOT_IDENT@ ro @CMDLINE@
+    initrd @UCODE@ /initramfs-linux.img
+}
+
+menuentry 'Reboot' --class reboot { reboot }
+menuentry 'Power off' --class poweroff { halt }

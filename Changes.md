@@ -21,4 +21,15 @@
     - Desktop launcher "AcreetionOS Recovery" in the live session
     - postinstall.sh now configures Timeshift (RSYNC snapshots) on fresh installs so recovery works from day one
     - New packages: timeshift, testdisk, ddrescue, fsarchiver, gparted, dialog, libnewt (whiptail), inxi
+11. Added the WinRE-style Recovery Partition (`acreetion-recovery-setup`):
+    - postinstall provisions an ~800MiB "ACRECOVERY" ext4 partition inside unpartitioned free space
+      (strict guards: never touches existing partitions; skips safely when no space/slot)
+    - the partition is fully self-contained: its own GRUB + copies of kernel/initramfs/microcode,
+      so it works even when the main /boot is damaged
+    - MAIN bootloader only CHAINLOADS it: F9 hotkey menu entry (GRUB native f-key hotkeys) or
+      automatic failover via grubenv recordfail tracking (acreetion-boot-success.service clears
+      the flag on successful boot; 06/45 grub.d scripts add the tracked default entry + fallback)
+    - pacman hook keeps the partition's kernel copies in sync on linux upgrades
+    - `--auto` / `--device <part>` / `--sync-kernels` modes; also usable from the live ISO to
+      retrofit recovery onto existing installs
 

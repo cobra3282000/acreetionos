@@ -1,0 +1,9 @@
+[Trigger]
+Operation = Upgrade
+Type = Package
+Target = linux
+
+[Action]
+Description = Syncing kernel to the AcreetionOS Recovery partition...
+When = PostTransaction
+Exec = /usr/bin/acreetion-recovery-setup --sync-kernels

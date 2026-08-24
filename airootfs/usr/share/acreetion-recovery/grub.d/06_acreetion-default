@@ -1,0 +1,46 @@
+#!/bin/sh
+# 06_acreetion-default - primary boot entry with failure tracking.
+#
+# Generated early (before 10_linux) so it becomes the first entry; setup sets
+# GRUB_DEFAULT="acreetion-default" in /etc/default/grub. The entry marks every
+# boot attempt in the grubenv ("recordfail"); the acreetion-boot-success
+# service clears it once userspace is up. If the flag survives to the next
+# boot, 45_acreetion-recovery flips the default to the Recovery Environment -
+# mirroring Windows' automatic recovery fallback.
+set -e
+
+# Only act on plain Arch-style layouts we understand.
+[ -f /boot/vmlinuz-linux ] || exit 0
+[ -f /boot/initramfs-linux.img ] || exit 0
+
+. /usr/share/grub/grub-mkconfig_lib 2>/dev/null || true
+
+ROOT_PARTUUID="$(findmnt -rno PARTUUID -T / | head -n1)"
+ROOT_UUID="$(findmnt -rno UUID -T / | head -n1)"
+[ -n "$ROOT_PARTUUID" ] || ROOT_PARTUUID="$ROOT_UUID"
+[ -n "$ROOT_PARTUUID" ] || exit 0
+
+if [ -f /etc/default/grub ]; then
+    . /etc/default/grub
+fi
+CMDLINE="${GRUB_CMDLINE_LINUX:-} ${GRUB_CMDLINE_LINUX_DEFAULT:-}"
+
+UCODE=""
+for f in /boot/intel-ucode.img /boot/amd-ucode.img; do
+    [ -f "$f" ] && UCODE="$UCODE /$(basename "$f")"
+done
+
+cat << EOF
+function acreetion_recordfail {
+  set recordfail=1
+  if [ -n "\${have_grubenv}" ]; then if [ -z "\${boot_once}" ]; then save_env recordfail; fi; fi
+}
+
+menuentry 'AcreetionOS Linux' --class acreetion --class gnu-linux --class gnu --class os --id 'acreetion-default' {
+	acreetion_recordfail
+	set gfxpayload=keep
+	insmod gzio
+	linux /vmlinuz-linux root=PARTUUID=$ROOT_PARTUUID rw $CMDLINE
+	initrd$UCODE /initramfs-linux.img
+}
+EOF

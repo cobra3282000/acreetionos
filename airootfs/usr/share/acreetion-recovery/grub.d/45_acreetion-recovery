@@ -1,0 +1,34 @@
+#!/bin/sh
+# 45_acreetion-recovery - chainload entry + automatic failover.
+#
+# Adds an F9-hotkey entry that chainloads the AcreetionOS Recovery
+# partition's own bootloader (Windows-RE style), and flips the default to
+# recovery when the previous boot failed (recordfail flag still set).
+set -e
+
+REC_UUID="$(lsblk -rno UUID,LABEL | awk '$2=="ACRECOVERY"{print $1; exit}')"
+[ -n "$REC_UUID" ] || exit 0
+
+cat << EOF
+if [ "\${grub_platform}" == "efi" ]; then
+menuentry 'AcreetionOS Recovery Environment (F9)' --hotkey=f9 --class recovery --class os --id 'acreetion-recovery' {
+	search --no-floppy --fs-uuid --set=recovery_part $REC_UUID
+	chainloader /EFI/BOOT/BOOTX64.EFI
+}
+else
+menuentry 'AcreetionOS Recovery Environment (F9)' --hotkey=f9 --class recovery --class os --id 'acreetion-recovery' {
+	search --no-floppy --fs-uuid --set=root $REC_UUID
+	chainloader +1
+}
+fi
+
+# Automatic fallback: if the last boot attempt never reached userspace
+# (recordfail was not cleared by acreetion-boot-success.service), offer the
+# Recovery Environment instead of looping a broken boot.
+if [ "\${recordfail}" = "1" ]; then
+	set default="acreetion-recovery"
+	set timeout=12
+	echo "Previous boot failed - starting the AcreetionOS Recovery Environment."
+	sleep -i -v 3
+fi
+EOF
