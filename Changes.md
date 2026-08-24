@@ -30,6 +30,8 @@
       automatic failover via grubenv recordfail tracking (acreetion-boot-success.service clears
       the flag on successful boot; 06/45 grub.d scripts add the tracked default entry + fallback)
     - pacman hook keeps the partition's kernel copies in sync on linux upgrades
+    - compressed footprint: payloads stored gzip -9 (GRUB gzio decompresses at boot),
+      fallback initramfs omitted, ext4 without journal/reserved blocks; carve shrunk 800→512MiB
     - `--auto` / `--device <part>` / `--sync-kernels` modes; also usable from the live ISO to
       retrofit recovery onto existing installs
 

@@ -15,21 +15,24 @@ set timeout=5
 
 insmod all_video
 insmod gfxterm
+insmod gzio
 terminal_output gfxterm
-if loadfont /boot/grub/fonts/unicode.pf2 ; then
+if loadfont /boot/grub/fonts/unicode.pf2.gz ; then
     set gfxmode=auto
 fi
 
+# All payload files are stored gzip-compressed; gzio decompresses them
+# transparently at load time.
 menuentry 'AcreetionOS Recovery Environment' --hotkey=r --id recovery-first --class recovery --class os {
     set gfxpayload=keep
-    linux /vmlinuz-linux root=PARTUUID=@ROOT_IDENT@ rw acreetion_recovery=1 systemd.unit=acreetion-recovery.target loglevel=3 vt.global_cursor_default=0
-    initrd @UCODE@ /initramfs-linux.img
+    linux /vmlinuz-linux.gz root=PARTUUID=@ROOT_IDENT@ rw acreetion_recovery=1 systemd.unit=acreetion-recovery.target loglevel=3 vt.global_cursor_default=0
+    initrd @UCODE@ /initramfs-linux.img.gz
 }
 
 menuentry 'Boot AcreetionOS normally' --class gnu-linux --class os {
     set gfxpayload=keep
-    linux /vmlinuz-linux root=PARTUUID=@ROOT_IDENT@ ro @CMDLINE@
-    initrd @UCODE@ /initramfs-linux.img
+    linux /vmlinuz-linux.gz root=PARTUUID=@ROOT_IDENT@ ro @CMDLINE@
+    initrd @UCODE@ /initramfs-linux.img.gz
 }
 
 menuentry 'Reboot' --class reboot { reboot }

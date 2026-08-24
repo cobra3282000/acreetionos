@@ -25,7 +25,10 @@
 set -u
 
 REC_LABEL="ACRECOVERY"
-REC_SIZE_MIB=800
+# 512MiB is ample for gzip'd kernel + initramfs + GRUB: payloads land at a
+# third of their /boot size, and the filesystem itself carries no journal or
+# reserved blocks.
+REC_SIZE_MIB=512
 REC_MNT=/run/acreetion-recovery
 SHARE=/usr/share/acreetion-recovery
 GRUB_D_SRC="$SHARE/grub.d"
@@ -149,15 +152,19 @@ install_recovery_grub() {
               sed -n 's/^GRUB_CMDLINE_LINUX_DEFAULT="\?\([^"]*\)"\?/\1/p' /etc/default/grub ||
               echo "quiet splash loglevel=3")
 
-    local ucode_line="/intel-ucode.img /amd-ucode.img"
+    # GRUB's gzio module decompresses transparently at load time, so every
+    # payload is stored gzip -9. The fallback initramfs is deliberately not
+    # copied: it is the single biggest file and recovery boots do not need it.
+    local ucode_line=""
     local ucodes="" f
     for f in /boot/intel-ucode.img /boot/amd-ucode.img; do
-        [[ -f $f ]] && ucodes+="/$(basename "$f") "
+        [[ -f $f ]] && ucodes+="/$(basename "$f").gz "
     done
-    [[ -n "$ucodes" ]] && ucode_line="$ucodes" || ucode_line=""
+    ucode_line="$ucodes"
 
     mkdir -p "$mnt/boot/grub/fonts"
-    cp -f /usr/share/grub/unicode.pf2 "$mnt/boot/grub/fonts/" 2>/dev/null
+    gzip -9c /usr/share/grub/unicode.pf2 > "$mnt/boot/grub/fonts/unicode.pf2.gz" 2>/dev/null ||
+        cp -f /usr/share/grub/unicode.pf2 "$mnt/boot/grub/fonts/" 2>/dev/null
     grub-editenv "$mnt/boot/grub/grubenv" create 2>/dev/null || touch "$mnt/boot/grub/grubenv"
 
     sed -e "s|@ROOT_IDENT@|$root_partuuid|g" \
@@ -167,11 +174,17 @@ install_recovery_grub() {
 }
 
 sync_kernels_to() {
-    local mnt=$1 rc=0
-    for f in vmlinuz-linux initramfs-linux.img initramfs-linux-fallback.img intel-ucode.img amd-ucode.img; do
-        [[ -f "/boot/$f" ]] && install -m0644 "/boot/$f" "$mnt/$f" || rc=1
+    local mnt=$1 rc=0 f
+    rm -f "$mnt"/vmlinuz-linux* "$mnt"/initramfs-linux* "$mnt"/*-ucode.img* 2>/dev/null
+    for f in vmlinuz-linux initramfs-linux.img intel-ucode.img amd-ucode.img; do
+        if [[ -f "/boot/$f" ]]; then
+            gzip -9c "/boot/$f" > "$mnt/$f.gz" || { rc=1; continue; }
+            say "  + $f.gz ($(du -h "/boot/$f" | cut -f1) → $(du -h "$mnt/$f.gz" | cut -f1))"
+        else
+            warn "missing /boot/$f"
+            [[ "$f" == *ucode* ]] || rc=1
+        fi
     done
-    (( rc )) && warn "some kernel files were missing from /boot"
     return $rc
 }
 
@@ -229,9 +242,12 @@ main_provision() {
     mkdir -p "$mnt"
     mountpoint -q "$mnt" && umount "$mnt"
     if (( fresh )) || ! mount "$part" "$mnt" 2>/dev/null; then
-        say "Formatting $part as ext4 ($REC_LABEL)"
+        say "Formatting $part as ext4 ($REC_LABEL, no journal, no reserved blocks)"
         wipefs -a "$part" >/dev/null 2>&1
-        mkfs.ext4 -q -F -L "$REC_LABEL" "$part" || die "mkfs failed on $part"
+        # -m0: nothing reserved for root (partition is read-mostly).
+        # ^has_journal: ext2-style, saves ~16MiB and avoids journal churn;
+        # GRUB reads it through the same ext2 driver.
+        mkfs.ext4 -q -F -L "$REC_LABEL" -m0 -O '^has_journal' "$part" || die "mkfs failed on $part"
         mount "$part" "$mnt" || die "mount failed" 1
     fi
 
