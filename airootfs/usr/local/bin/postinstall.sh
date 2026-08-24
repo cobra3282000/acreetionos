@@ -114,6 +114,28 @@ else
     echo "No internet connection detected, skipping pacman self-update."
 fi
 
+##############################################################################
+# Anonymous user count ("CountMe"): opt-in question asked once at install.
+# If accepted, one anonymous ping per week is sent containing ONLY a random
+# number generated on this machine plus the OS version. No personal data,
+# no hardware info, nothing sold or shared.
+# Users can change their mind later with:
+#   sudo acreetionos-countme enable | disable | status
+##############################################################################
+if [ -t 0 ]; then
+    echo
+    echo "Help improve AcreetionOS?"
+    echo "We would like to count how many people use the OS. If you agree,"
+    echo "ONE anonymous ping is sent per week (a random number generated on"
+    echo "this machine + OS version). No personal data is ever collected."
+    answer=""
+    read -r -t 30 -p "Allow the weekly anonymous count? [y/N] " answer || true
+    case "$answer" in
+        y|Y|yes|YES) acreetionos-countme enable ;;
+        *)           acreetionos-countme disable ;;
+    esac
+fi
+
 # fix lightdm issue after install
 
 rm -rf /etc/systemd/system/display-manager.service

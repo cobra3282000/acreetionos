@@ -1,0 +1,131 @@
+#!/bin/bash
+##############################################################################
+#
+#  acreetionos-countme - anonymous install counter for AcreetionOS
+#
+#  Sends ONE anonymous HTTP request per week so the project knows roughly
+#  how many installs are alive. What is sent:
+#    - a random UUID generated once on this machine (/var/lib/acreetionos/)
+#    - the OS version string from /etc/os-release
+#
+#  What is NEVER sent: username, hostname, hardware serials, MAC addresses,
+#  package lists, IP-linked identifiers beyond your normal connection.
+#  The UUID cannot be traced back to you or your hardware.
+#
+#  Off by default. Opt in/out at any time:
+#      sudo acreetionos-countme enable
+#      sudo acreetionos-countme disable
+#      sudo acreetionos-countme status
+#
+##############################################################################
+#  SERVER SIDE (iso.acreetionos.org) - nothing to deploy on clients:
+#
+#  nginx:
+#      location /countme/ {
+#          access_log /var/log/nginx/countme.log;
+#          return 204;
+#      }
+#
+#  Total active installs seen in the log window:
+#      grep -oE 'countme/[0-9a-f-]{36}' /var/log/nginx/countme*.log \
+#          | cut -d/ -f2 | sort -u | wc -l
+#
+#  Active installs per OS version (last 7 days):
+#      awk '$8 ~ /v=/ {split($8,q,"v="); print q[2]}' ... # see COUNTME.md
+#
+##############################################################################
+
+set -u
+
+STATE_DIR="/var/lib/acreetionos/countme"
+UUID_FILE="${STATE_DIR}/uuid"
+ENABLED_FILE="${STATE_DIR}/enabled"
+LAST_PING_FILE="${STATE_DIR}/last-ping"
+ENDPOINT="https://iso.acreetionos.org/countme"
+
+gen_uuid() {
+    if [ -r /proc/sys/kernel/random/uuid ]; then
+        cat /proc/sys/kernel/random/uuid
+    else
+        head -c 16 /dev/urandom | od -An -tx1 | tr -d ' \n' |
+            sed 's/\(.\{8\}\)\(.\{4\}\)\(.\{4\}\)\(.\{4\}\)\(.\{12\}\)/\1-\2-\3-\4-\5/'
+    fi
+}
+
+os_version() {
+    local v=""
+    if [ -r /etc/os-release ]; then
+        # shellcheck disable=SC1091
+        . /etc/os-release
+        v="${VERSION_ID:-${BUILD_ID:-}}"
+    fi
+    echo "${v:-unknown}"
+}
+
+ensure_uuid() {
+    mkdir -p "${STATE_DIR}"
+    chmod 700 "${STATE_DIR}"
+    if [ ! -s "${UUID_FILE}" ]; then
+        gen_uuid >"${UUID_FILE}" 2>/dev/null || openssl rand -hex 16 >"${UUID_FILE}"
+        chmod 600 "${UUID_FILE}"
+    fi
+}
+
+do_enable() {
+    ensure_uuid
+    touch "${ENABLED_FILE}"
+    echo "CountMe enabled. One anonymous ping will be sent weekly."
+    echo "Your anonymous id: $(cat "${UUID_FILE}")"
+}
+
+do_disable() {
+    rm -f "${ENABLED_FILE}"
+    echo "CountMe disabled. No data will be sent."
+}
+
+do_status() {
+    if [ -f "${ENABLED_FILE}" ]; then
+        echo "enabled"
+    else
+        echo "disabled"
+    fi
+    if [ -f "${LAST_PING_FILE}" ]; then
+        echo "last ping: $(cat "${LAST_PING_FILE}")"
+    fi
+}
+
+do_ping() {
+    # Silently do nothing unless the user opted in
+    [ -f "${ENABLED_FILE}" ] || exit 0
+
+    ensure_uuid
+    local uuid ver
+    uuid="$(cat "${UUID_FILE}")"
+    ver="$(os_version)"
+
+    if command -v curl >/dev/null 2>&1; then
+        curl -fsS --max-time 20 \
+            -A "acreetionos-countme/1.0 (${ver})" \
+            -o /dev/null "${ENDPOINT}/${uuid}?v=${ver}" || exit 0
+    elif command -v wget >/dev/null 2>&1; then
+        wget -q -T 20 -O /dev/null -U "acreetionos-countme/1.0 (${ver})" \
+            "${ENDPOINT}/${uuid}?v=${ver}" || exit 0
+    else
+        exit 0
+    fi
+
+    date -Is >"${LAST_PING_FILE}" 2>/dev/null
+}
+
+case "${1:-ping}" in
+    enable)  do_enable ;;
+    disable) do_disable ;;
+    status)  do_status ;;
+    ping)    do_ping ;;
+    *)
+        echo "usage: acreetionos-countme [enable|disable|status|ping]" >&2
+        exit 2
+        ;;
+esac
+
+exit 0

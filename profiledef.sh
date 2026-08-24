@@ -40,4 +40,5 @@ file_permissions=(
   ["/etc/NetworkManager/dispatcher.d/10-fix-static-method"]="0:0:755"
   ["/usr/bin/acreetion-recovery"]="0:0:755"
   ["/usr/bin/acreetion-recovery-setup"]="0:0:755"
+  ["/usr/local/bin/acreetionos-countme"]="0:0:755"
 )

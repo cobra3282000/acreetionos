@@ -1,0 +1,21 @@
+[Unit]
+Description=AcreetionOS anonymous user count ping (opt-in)
+Documentation=https://acreetionos.org/
+Wants=network-online.target
+After=network-online.target
+# Never runs unless the user opted in (/var/lib/acreetionos/countme/enabled)
+ConditionPathExists=/var/lib/acreetionos/countme/enabled
+ConditionACPower=true
+
+[Service]
+Type=oneshot
+ExecStart=/usr/local/bin/acreetionos-countme ping
+# Sandbox: the only thing this unit may write is its own state directory
+NoNewPrivileges=yes
+ProtectHome=yes
+ProtectSystem=strict
+PrivateTmp=yes
+ReadWritePaths=/var/lib/acreetionos/countme
+
+[Install]
+WantedBy=multi-user.target
