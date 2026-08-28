@@ -27,7 +27,17 @@
       "Bash(curl -s https://termbin.com/m0rf -o /home/darren/.claude/jobs/3f7701a6/tmp/calamares.log)",
       "Bash(grep -rn \"kpmcore\\\\|xxglib2\\\\|xx\\\\${\" /home/darren/packages/calamares-config /home/darren/packages/calamares-config-live)",
       "WebSearch",
-      "Bash(git rev-list *)"
+      "Bash(git rev-list *)",
+      "Bash(echo \"exit: $?\")",
+      "Bash(pacman -Qi xlibre-xserver)",
+      "Bash(pacman -Qi xorg-server)",
+      "Bash(grep -vE '^\\\\s*#|^\\\\s*$' /home/darren/packages/acreetionos/packages.x86_64)",
+      "Bash(grep -vE '^\\\\s*#|^\\\\s*$' /home/darren/packages/acreetionos-xlibre/packages.x86_64)",
+      "Bash(pacman -Si firefox-ublock-origin)",
+      "Bash(find / -maxdepth 6 -iname \"*ublock*\")",
+      "Bash(pacman -Si xdg-desktop-portal-xapp)",
+      "Bash(pacman -Si pipewire-pulse)",
+      "Bash(pacman -Si wireplumber)"
     ]
   }
 }
