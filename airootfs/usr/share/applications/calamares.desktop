@@ -1,0 +1,15 @@
+[Desktop Entry]
+Name=Calamares
+Comment=Calamares Installer
+GenericName=System Installer
+Exec=/usr/bin/calamares.sh
+Icon=calamares
+Type=Application
+Categories=System;
+Path=/usr/bin
+X-GNOME-Autostart-enabled=true
+NoDisplay=false
+Hidden=false
+Name[en_US]=Calamares
+Comment[en_US]=Calamares Installer
+X-GNOME-Autostart-Delay=1

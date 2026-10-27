@@ -1,12 +1,11 @@
 [Desktop Entry]
 Name=background-set
-StartupWMClass=discord
 Comment=set background of system
 GenericName=dd.sh
 Exec=/usr/bin/dd.sh
-Icon=
+Icon=preferences-desktop-wallpaper
 Type=Application
-Categories=Installer
+Categories=Settings;DesktopSettings;
 Path=/usr/bin
 X-GNOME-Autostart-enabled=true
 NoDisplay=false
