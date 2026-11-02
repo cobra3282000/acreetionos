@@ -1,0 +1,9 @@
+[Desktop Entry]
+Icon=cs-layout
+Exec=cinnamon-settings layout
+Type=Application
+OnlyShowIn=X-Cinnamon;
+Categories=Settings;
+Name=Layout Modes
+Comment=Choose the AcreetionOS desktop layout mode
+Keywords=layout;mode;macos;windows;window manager;acreetionos;dock;taskbar;

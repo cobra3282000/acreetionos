@@ -1,0 +1,88 @@
+#!/usr/bin/python3
+"""Apply an AcreetionOS desktop layout mode from the command line.
+
+The settings page in cinnamon-settings does the same thing, this is the
+scriptable version of it - handy for image setup and for trying a mode out
+without leaving the settings window.
+
+    acreetionos-layout-mode --list
+    acreetionos-layout-mode --current
+    acreetionos-layout-mode macos
+"""
+
+import argparse
+import os
+import sys
+
+# The library lives next to the other AcreetionOS files rather than in
+# site-packages, because it belongs to the ISO and not to a python package.
+for _path in ("/usr/lib/acreetionos",
+              os.path.join(os.path.dirname(os.path.dirname(
+                  os.path.realpath(__file__))), "lib", "acreetionos")):
+    if os.path.isdir(_path):
+        sys.path.insert(0, _path)
+        break
+
+import layout_modes
+
+
+def main(argv=None):
+    parser = argparse.ArgumentParser(
+        prog="acreetionos-layout-mode",
+        description="Apply an AcreetionOS desktop layout mode.")
+    parser.add_argument("mode", nargs="?",
+                        help="the mode to apply")
+    parser.add_argument("--list", action="store_true",
+                        help="list the available modes")
+    parser.add_argument("--current", action="store_true",
+                        help="show the mode that is in use")
+    parser.add_argument("--describe", metavar="MODE",
+                        help="describe a mode without applying it")
+
+    args = parser.parse_args(argv)
+
+    if args.list:
+        for mode in layout_modes.list_modes():
+            print("%-14s %s" % (mode["id"], mode["label"]))
+        return 0
+
+    if args.current:
+        mode_id = layout_modes.current_mode()
+        if mode_id is None:
+            print("none (the desktop is set up by hand)")
+            return 0
+        mode = layout_modes.get_mode(mode_id)
+        print("%s (%s)" % (mode["id"], mode["label"]))
+        return 0
+
+    if args.describe:
+        mode = layout_modes.get_mode(args.describe)
+        if mode is None:
+            print("unknown layout mode: %s" % args.describe, file=sys.stderr)
+            return 1
+        print("%s - %s" % (mode["label"], mode["summary"]))
+        for panel in mode["panels"]:
+            print("  panel %s: %s, %spx, autohide %s" %
+                  (panel["id"], panel["position"], panel["height"],
+                   panel["autohide"]))
+        return 0
+
+    if not args.mode:
+        parser.print_help()
+        return 2
+
+    try:
+        mode = layout_modes.apply_mode(args.mode)
+    except ValueError as error:
+        print(error, file=sys.stderr)
+        print("known modes: %s" % ", ".join(m["id"] for m in
+                                           layout_modes.list_modes()),
+              file=sys.stderr)
+        return 1
+
+    print("Applied the %s layout mode." % mode["label"])
+    return 0
+
+
+if __name__ == "__main__":
+    sys.exit(main())

@@ -7,4 +7,5 @@
 7. Replaced Console with Mate Terminal because it works, added glu
 8. Added xorg-xmessage
 9. totally converted to acreetion os now days!  no not put arch repo's back in system will break its key ring!
+10. Added the Layout Modes page to the Cinnamon settings: macOS, Windows, Window Manager and AcreetionOS desktop layouts.
 
