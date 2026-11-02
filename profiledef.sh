@@ -26,6 +26,7 @@ file_permissions=(
   ["/usr/local/bin/livecd-sound"]="0:0:755"
   ["/usr/bin/calamares"]="0:0:755"
 #  ["/usr/lib/calamares/modules/*"]="0:0:755"
+  ["/usr/bin/acreetionos-layout-mode"]="0:0:755"
   ["/root/cinstall"]="0:0:755"
   ["/root/cinstall2"]="0:0:755"
   ["/root/zone"]="0:0:755"
