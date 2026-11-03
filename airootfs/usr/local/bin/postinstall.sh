@@ -79,7 +79,8 @@ rm -rf /backgrounds
 
 # chsh -s /bin/bash root
 
-echo "Defaults pwfeedback" | sudo EDITOR='tee -a' visudo >/dev/null 2>&1
+echo "Defaults pwfeedback" > /etc/sudoers.d/pwfeedback
+chmod 440 /etc/sudoers.d/pwfeedback
 
 #cp -r /cinnamon-configs/spices/* /home/$name/.config/cinnamon/spices/
 cp /etc/pacman2.conf pacman.conf
