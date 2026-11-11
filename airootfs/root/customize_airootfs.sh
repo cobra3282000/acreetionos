@@ -5,3 +5,8 @@
 set -e -u
 
 mkinitcpio -p linux
+
+# The airootfs overlay is copied in after pacstrap's package hooks already
+# ran, so gschema overrides shipped in this repo (e.g. the branded wallpaper
+# default) are never compiled unless we do it here.
+glib-compile-schemas /usr/share/glib-2.0/schemas
