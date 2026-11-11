@@ -15,6 +15,7 @@ linux-firmware
 linux-firmware-marvell
 linux-firmware-qlogic
 linux-firmware-whence
+kbd
 mkinitcpio
 mkinitcpio-archiso
 mkinitcpio-nfs-utils
