@@ -1,0 +1,8 @@
+[Plymouth Theme]
+Name=AcreetionOS Animated
+Description=AcreetionOS Plymouth Theme - flare ignition
+ModuleName=script
+
+[script]
+ImageDir=/usr/share/plymouth/themes/acreetion-anim
+ScriptFile=/usr/share/plymouth/themes/acreetion-anim/acreetion-anim.script

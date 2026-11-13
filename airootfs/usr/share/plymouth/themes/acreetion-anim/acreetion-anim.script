@@ -1,0 +1,210 @@
+# AcreetionOS animated boot splash - flare ignition
+#
+# The artwork is split into three sprites so the plume can animate on its own:
+#   acreetion-base.png  logo body, plume painted out
+#   flare-00..19.png    plume ignition frames, cropped sprite, prerendered glow
+#   flare-hot.png       bright plume for the loop shimmer
+#   glow.png            radial gradient at the eye, breathes after ignition
+#
+# All sprites are cover-scaled once at load, the same way the static theme
+# scales its background, so the theme stays correct on panels that are not
+# 16:9. On a 16:9 console the scale is 1.0 and everything is a straight blit.
+
+Window.SetBackgroundTopColor(0, 0, 0);
+Window.SetBackgroundBottomColor(0, 0, 0);
+
+status = "normal";
+tick = 0;
+glow_angle = 0;
+hot_angle = 0;
+
+# timing. ticks are refresh callbacks; plymouth repaints at ~50 Hz, which is
+# the same assumption the stock "script" theme makes for its pulse rates.
+FADE_TICKS = 25;          # logo body fade-in, ~0.5 s
+FLARE_FRAME_TICKS = 2;    # ticks per plume frame: 20 frames -> ~0.8 s ignition
+IGNITE_END = 40;          # last tick of the ignition phase
+EYE_HZ = 0.4;             # eye shimmer frequency
+HOT_HZ = 0.27;            # plume shimmer frequency, phase-offset from the eye
+HOT_MAX = 0.3;            # cap on the shimmer so it stays a shimmer
+
+# artwork-space origins of the cropped sprites, measured off the 1920x1080
+# source; every sprite is scaled with the base so they stay in register
+FLARE_X = 686;
+FLARE_Y = 361;
+GLOW_X = 760;
+GLOW_Y = 160;
+
+base.image = Image("acreetion-base.png");
+screen_w = Window.GetWidth();
+screen_h = Window.GetHeight();
+img_w = base.image.GetWidth();
+img_h = base.image.GetHeight();
+scale = Math.Max(screen_w / img_w, screen_h / img_h);
+
+base.scaled = base.image.Scale(Math.Int(img_w * scale), Math.Int(img_h * scale));
+base.sprite = Sprite(base.scaled);
+off_x = Math.Int((screen_w - base.scaled.GetWidth()) / 2);
+off_y = Math.Int((screen_h - base.scaled.GetHeight()) / 2);
+base.sprite.SetPosition(off_x, off_y, -100);
+base.sprite.SetOpacity(0);            # refresh fades it in
+
+flare[0].image = Image("flare-00.png");
+flare[1].image = Image("flare-01.png");
+flare[2].image = Image("flare-02.png");
+flare[3].image = Image("flare-03.png");
+flare[4].image = Image("flare-04.png");
+flare[5].image = Image("flare-05.png");
+flare[6].image = Image("flare-06.png");
+flare[7].image = Image("flare-07.png");
+flare[8].image = Image("flare-08.png");
+flare[9].image = Image("flare-09.png");
+flare[10].image = Image("flare-10.png");
+flare[11].image = Image("flare-11.png");
+flare[12].image = Image("flare-12.png");
+flare[13].image = Image("flare-13.png");
+flare[14].image = Image("flare-14.png");
+flare[15].image = Image("flare-15.png");
+flare[16].image = Image("flare-16.png");
+flare[17].image = Image("flare-17.png");
+flare[18].image = Image("flare-18.png");
+flare[19].image = Image("flare-19.png");
+
+flare_x = off_x + Math.Int(FLARE_X * scale);
+flare_y = off_y + Math.Int(FLARE_Y * scale);
+i = 0;
+while (i < 20)
+  {
+    flare[i].scaled = flare[i].image.Scale(Math.Int(flare[i].image.GetWidth() * scale),
+                                           Math.Int(flare[i].image.GetHeight() * scale));
+    flare[i].sprite = Sprite(flare[i].scaled);
+    flare[i].sprite.SetPosition(flare_x, flare_y, 0);
+    flare[i].sprite.SetOpacity(0);    # nothing lit until the ignition reaches it
+    i += 1;
+  }
+
+hot.image = Image("flare-hot.png");
+hot.scaled = hot.image.Scale(Math.Int(hot.image.GetWidth() * scale),
+                             Math.Int(hot.image.GetHeight() * scale));
+hot.sprite = Sprite(hot.scaled);
+hot.sprite.SetPosition(flare_x, flare_y, 1);
+hot.sprite.SetOpacity(0);
+
+glow.image = Image("glow.png");
+glow.scaled = glow.image.Scale(Math.Int(glow.image.GetWidth() * scale),
+                               Math.Int(glow.image.GetHeight() * scale));
+glow.sprite = Sprite(glow.scaled);
+glow.sprite.SetPosition(off_x + Math.Int(GLOW_X * scale),
+                        off_y + Math.Int(GLOW_Y * scale), 2);
+glow.sprite.SetOpacity(0);
+
+# messages keep their own sprite, same as the static theme
+message_sprite = Sprite();
+message_sprite.SetPosition(10, 10, 10000);
+
+fun message_callback(text)
+  {
+    message_sprite.SetImage(Image.Text(text, 1, 1, 1));
+  }
+
+Plymouth.SetMessageFunction(message_callback);
+
+fun display_normal_callback()
+  {
+    global.status = "normal";
+  }
+
+fun display_password_callback(prompt, bullets)
+  {
+    global.status = "password";
+  }
+
+fun display_question_callback(prompt)
+  {
+    global.status = "message";
+  }
+
+Plymouth.SetDisplayNormalFunction(display_normal_callback);
+Plymouth.SetDisplayPasswordFunction(display_password_callback);
+Plymouth.SetDisplayQuestionFunction(display_question_callback);
+Plymouth.SetDisplayMessageFunction(display_question_callback);
+
+fun refresh_callback()
+  {
+    global.tick += 1;
+
+    if (status == "normal")
+      {
+        # logo body fades in, then holds
+        if (tick <= FADE_TICKS)
+          base.sprite.SetOpacity(tick / FADE_TICKS);
+        else
+          base.sprite.SetOpacity(1);
+
+        # plume: show exactly one ignition frame
+        f = Math.Int(tick / FLARE_FRAME_TICKS);
+        if (f > 19)
+          f = 19;
+        i = 0;
+        while (i < 20)
+          {
+            if (i == f)
+              flare[i].sprite.SetOpacity(1);
+            else
+              flare[i].sprite.SetOpacity(0);
+            i += 1;
+          }
+
+        # eye glow ramps in as the flame reaches the eye, then breathes
+        global.glow_angle += (2 * 3.14 / 50) * EYE_HZ;
+        pulse = (Math.Cos(glow_angle) + 1) / 2;
+        if (tick < IGNITE_END)
+          glow.sprite.SetOpacity((tick / IGNITE_END) * (0.08 + 0.14 * pulse));
+        else
+          glow.sprite.SetOpacity(0.08 + 0.14 * pulse);
+
+        # plume shimmer only once the ignition has settled
+        global.hot_angle += (2 * 3.14 / 50) * HOT_HZ;
+        if (tick < IGNITE_END)
+          hot.sprite.SetOpacity(0);
+        else
+          hot.sprite.SetOpacity(HOT_MAX * (Math.Cos(hot_angle) + 1) / 2);
+      }
+    else
+      {
+        # freeze on the settled look while a prompt or message is up, so the
+        # animation never fights the dialogue
+        base.sprite.SetOpacity(1);
+        i = 0;
+        while (i < 20)
+          {
+            if (i == 19)
+              flare[i].sprite.SetOpacity(1);
+            else
+              flare[i].sprite.SetOpacity(0);
+            i += 1;
+          }
+        glow.sprite.SetOpacity(0);
+        hot.sprite.SetOpacity(0);
+      }
+  }
+
+Plymouth.SetRefreshFunction(refresh_callback);
+
+# hand over to the display manager with everything fully lit
+fun quit_callback()
+  {
+    base.sprite.SetOpacity(1);
+    i = 0;
+    while (i < 20)
+      {
+        if (i == 19)
+          flare[i].sprite.SetOpacity(1);
+        else
+          flare[i].sprite.SetOpacity(0);
+        i += 1;
+      }
+    glow.sprite.SetOpacity(0.08);
+    hot.sprite.SetOpacity(0);
+  }
+
+Plymouth.SetQuitFunction(quit_callback);
