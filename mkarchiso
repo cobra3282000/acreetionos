@@ -195,7 +195,12 @@ _run_mksquashfs() {
 
 # change for EndeavourOS start
 
-    "$RUN_BEFORE_SQUASHFS"
+    # The hook runs as a separate process, so it cannot see this shell's
+    # variables - pacstrap_dir is not exported, only LC_ALL, SOURCE_DATE_EPOCH
+    # and the ARCHISO_* descriptors are. Pass the directory to work on and the
+    # path about to be packed, so it never has to guess either one from the
+    # working directory.
+    "$RUN_BEFORE_SQUASHFS" "$pacstrap_dir" "$1"
 
 # change for EndeavourOS end
 
