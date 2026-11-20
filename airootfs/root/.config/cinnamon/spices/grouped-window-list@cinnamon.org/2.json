@@ -358,7 +358,7 @@
         ],
         "value": [
             "firefox.desktop",
-            "com.system76.CosmicTerm.desktop",
+            "org.gnome.Terminal.desktop",
             "nemo.desktop",
             "org.mozilla.Thunderbird.desktop"
         ]
