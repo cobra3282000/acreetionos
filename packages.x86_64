@@ -266,6 +266,17 @@ intel-ucode
 #yay-bin
 libpamac-aur
 pamac-gtk3
+# Backends for pamac extended update checks - Flatpak/Snap/AppImage (#50)
+flatpak
+flatpak-xdg-utils
+# snapd is AUR (snapd) and not in repo-main; pamac will handle snap updates
+# once snapd is installed via yay (pamac EnableSnap is already on).
+# For ISO we ship snapd support as config-only; post-install users can:
+#   yay -S snapd && sudo systemctl enable --now snapd.socket
+# AppImage - pamac has no native AppImage backend, ship helpers
+libappimage
+appimagepool
+appimage-installer
 
 # Media players
 vlc
