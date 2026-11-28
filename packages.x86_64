@@ -74,6 +74,7 @@ iwd
 wpa_supplicant
 wireless-regdb
 wireless_tools
+wifi-connection
 openssh
 rsync
 
